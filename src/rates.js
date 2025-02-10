@@ -56,15 +56,17 @@ const RENTAL_RATES = {
     }
 };
 
-function calculateQuote(vehicleType, mileageOption, needsInsurance) {
+function calculateQuote(vehicleType, mileageOption, needsInsurance, numDays = 1) {
     const rates = RENTAL_RATES[vehicleType];
     if (!rates) return null;
 
     const rate = mileageOption === '100' ? rates.rate_100 : rates.rate_200;
     if (rate === null) return null;
 
+    const dailyRate = rate;
+    const totalRentalCost = dailyRate * numDays;
     const insurance = needsInsurance === 'yes' ? rates.insurance : 0;
-    const subtotal = rate + rates.facility_fee + insurance;
+    const subtotal = totalRentalCost + rates.facility_fee + insurance;
     const tax = subtotal * rates.tax_rate;
     const total = subtotal + tax;
 
