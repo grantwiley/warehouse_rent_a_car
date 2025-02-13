@@ -6,7 +6,7 @@ function validateDate(dateInput) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
-    if (selectedDate.getDay() === 0) {
+    if (selectedDate.getDay() === 6) {
         alert('We are closed on Sundays. Please select another day.');
         dateInput.value = '';
         return false;
@@ -15,10 +15,24 @@ function validateDate(dateInput) {
     if (selectedDate < today) {
         alert('Please select a future date.');
         dateInput.value = '';
+        return false    }
+
+    const sixMonthsFromNow = new Date(today);
+    sixMonthsFromNow.setMonth(today.getMonth() + 6);
+    
+    if (selectedDate > sixMonthsFromNow) {
+        alert('For bookings more than 6 months in advance, please call us directly at 540-213-0202.');
+        dateInput.value = '';
         return false;
     }
     
     return true;
+}
+
+// Phone number validation utility
+function validatePhoneNumber(phone) {
+    const phoneRegex = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+    return phoneRegex.test(phone);
 }
 
 // Initialize EmailJS
@@ -131,6 +145,12 @@ class RentalQuoteForm {
             return false;
         }
 
+        const phoneInput = document.getElementById('phone').value;
+        if (!validatePhoneNumber(phoneInput)) {
+            alert('Please enter a valid phone number (e.g., 123-456-7890)');
+            return false;
+        }
+
         const pickupDate = new Date(this.pickupDateInput.value);
         const returnDate = new Date(this.returnDateInput.value);
 
@@ -198,7 +218,19 @@ class RentalQuoteForm {
                 const selectedAnswer = Array.from(radioButtons).find(radio => radio.checked);
 
                 if (selectedAnswer) {
-                    this.formData.answers[this.questions[this.currentQuestionIndex].name] = selectedAnswer.value;
+                    const currentQuestion = this.questions[this.currentQuestionIndex];
+                    this.formData.answers[currentQuestion.name] = selectedAnswer.value;
+                    
+                    if (currentQuestion.id === 'age-license' && selectedAnswer.value === 'no') {
+                        alert('We do rent to customers under the age of 25, but you must call us directly at 540-213-0202 to set up your rental.');
+                        window.location.href = '/quote/';
+                        return;
+                    }
+                    
+                    if (currentQuestion.id === 'insurance' && selectedAnswer.value === 'yes') {
+                        this.formData.answers.insurance_fee = 0; // No insurance fee needed
+                    }
+                    
                     this.showNextQuestion();
                 } else {
                     alert('Please select an answer before continuing.');
@@ -207,13 +239,25 @@ class RentalQuoteForm {
         }
 
         if (backButton) {
-            backButton.addEventListener('click', () => this.showPreviousQuestion());
+            backButton.addEventListener('click', () => {
+                const currentQuestion = this.questions[this.currentQuestionIndex];
+                delete this.formData.answers[currentQuestion.name];
+                this.showPreviousQuestion();
+            });
         }
 
         if (cancelButton) {
             cancelButton.addEventListener('click', () => {
                 window.location.href = '/quote/';
             });
+        }
+
+        // Restore previous answer if it exists
+        const currentQuestion = this.questions[this.currentQuestionIndex];
+        if (this.formData.answers[currentQuestion.name]) {
+            const value = this.formData.answers[currentQuestion.name];
+            const radio = this.quoteResult.querySelector(`input[name="${currentQuestion.name}"][value="${value}"]`);
+            if (radio) radio.checked = true;
         }
     }
 
@@ -243,9 +287,9 @@ class RentalQuoteForm {
                 <h4>100 Mile Package - $${quote100.base_rate}/day for ${numDays} days</h4>
                 <p>Base Rate: $${quote100.base_rate}/day (Total: $${(quote100.base_rate * numDays).toFixed(2)})</p>
                 <p>Facility Fee: $${quote100.facility_fee}</p>
-                ${quote100.insurance ? `<p>Insurance: $${quote100.insurance}</p>` : ''}
+                ${this.formData.answers.insurance === 'no' && quote100.insurance ? `<p>Insurance: $${quote100.insurance}</p>` : ''}
                 <p>Tax: $${quote100.tax.toFixed(2)}</p>
-                <p class="total">Total: $${quote100.total}/day</p>
+                <p class="total">Total: $${quote100.total}</p>
                 <p class="deposit">Required Deposit: $${this.formData.answers.out_of_state === 'yes' ? quote100.deposit.out_of_state : quote100.deposit.in_state}</p>
                 <button class="select-rate" data-mileage="100">Select 100 Mile Package</button>
             </div>` : ''}
@@ -253,9 +297,9 @@ class RentalQuoteForm {
                 <h4>200 Mile Package - $${quote200.base_rate}/day for ${numDays} days</h4>
                 <p>Base Rate: $${quote200.base_rate}/day (Total: $${(quote200.base_rate * numDays).toFixed(2)})</p>
                 <p>Facility Fee: $${quote200.facility_fee}</p>
-                ${quote200.insurance ? `<p>Insurance: $${quote200.insurance}</p>` : ''}
+                ${this.formData.answers.insurance === 'no' && quote200.insurance ? `<p>Insurance: $${quote200.insurance}</p>` : ''}
                 <p>Tax: $${quote200.tax.toFixed(2)}</p>
-                <p class="total">Total: $${quote200.total}/day</p>
+                <p class="total">Total: $${quote200.total}</p>
                 <p class="deposit">Required Deposit: $${this.formData.answers.out_of_state === 'yes' ? quote200.deposit.out_of_state : quote200.deposit.in_state}</p>
                 <button class="select-rate" data-mileage="200">Select 200 Mile Package</button>
             </div>
