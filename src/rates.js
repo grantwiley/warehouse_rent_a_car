@@ -65,7 +65,7 @@ function calculateQuote(vehicleType, mileageOption, needsInsurance, numDays = 1)
 
     const dailyRate = rate;
     const totalRentalCost = dailyRate * numDays;
-    const insurance = needsInsurance === 'yes' ? rates.insurance : 0;
+    const insurance = needsInsurance ? rates.insurance : 0;
     const subtotal = totalRentalCost + rates.facility_fee + insurance;
     const tax = subtotal * rates.tax_rate;
     const total = subtotal + tax;

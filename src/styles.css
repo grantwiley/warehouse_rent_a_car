@@ -474,8 +474,42 @@ nav a {
 
 .radio-group {
     display: flex;
-    gap: 2rem;
+    flex-wrap: wrap;
+    gap: 1.5rem;
     margin-top: 0.5rem;
+    padding: 0.5rem 0;
+}
+
+@media screen and (max-width: 480px) {
+    .radio-group {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
+.radio-group label {
+    flex: 1;
+    min-width: 120px;
+    padding: 0.75rem;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.radio-group label:hover {
+    border-color: #00007A;
+    background-color: rgba(0, 0, 122, 0.05);
+}
+
+.radio-group input[type="radio"]:checked + label {
+    background-color: #00007A;
+    color: white;
+    border-color: #00007A;
 }
 
 .radio-group label {
@@ -491,18 +525,47 @@ nav a {
     margin-top: 2rem;
 }
 
-.back-button,
-.cancel-button {
-    background-color: #666;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 0.75rem 1.5rem;
+.form-button {
+    width: 100%;
+    padding: 0.75rem 2rem;
     font-size: 1rem;
     font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
     text-transform: uppercase;
+}
+
+.next-button,
+.continue-button,
+.select-rate {
+    composes: form-button;
+    background-color: #00007A;
+    color: white;
+}
+
+.back-button,
+.cancel-button {
+    composes: form-button;
+    background-color: #666;
+    color: white;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 8px;
+    background-color: #eee;
+    border-radius: 4px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: #00007A;
+    transition: width 0.3s ease;
 }
 
 .back-button:hover,
@@ -848,10 +911,29 @@ nav a {
 }
 
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     width: 100%;
     box-sizing: border-box;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: formElementFadeIn 0.3s ease forwards;
 }
+
+@keyframes formElementFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-group:nth-child(1) { animation-delay: 0.1s; }
+.form-group:nth-child(2) { animation-delay: 0.2s; }
+.form-group:nth-child(3) { animation-delay: 0.3s; }
+.form-group:nth-child(4) { animation-delay: 0.4s; }
 
 .form-group label {
     display: block;
@@ -909,4 +991,12 @@ a {
 .fleet-info a {
     text-transform: uppercase;
     font-size: 14px;
+}
+.rental-form textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
 }
