@@ -708,6 +708,26 @@ nav a {
     display: none;
 }
 
+.quote-result .rate-options-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 20px 0;
+}
+
+.rate-option {
+    flex: 1;
+    min-width: 300px;
+    max-width: 450px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
 .rental-form {
     width: 100%;
     max-width: 500px;

@@ -279,6 +279,7 @@ class RentalQuoteForm {
     createRateOptionsHTML(quote100, quote200, numDays) {
         return `
             <h3>Select Your Mileage Package</h3>
+            <div class="rate-options-container">
             ${quote100 ? `
             <div class="rate-option" data-mileage="100">
                 <h4>100 Mile Package - $${quote100.base_rate}/day for ${numDays} days</h4>
@@ -337,19 +338,24 @@ class RentalQuoteForm {
         const quote = calculateQuote(this.formData.vehicleType, this.formData.selectedMileage, needsInsurance);
         
         const deposit = this.formData.answers.out_of_state === 'yes' ? quote.deposit.out_of_state : quote.deposit.in_state;
-        const totalRequired = deposit + quote.total;
+        const totalRequired = parseFloat(deposit) + parseFloat(quote.total);
         
-        emailjs.send('service_b8f7bys', 'template_p0lem5c', {
+        const formatDate = (dateStr) => {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        };
+
+        const emailData = {
             first_name: this.formData.firstName,
             last_name: this.formData.lastName,
             email: this.formData.email,
             phone: this.formData.phone,
-            vehicle_type: this.formData.vehicleType,
-            pickup_date: this.formData.pickupDate,
-            return_date: this.formData.returnDate,
-            age_license: this.formData.answers.age_license,
-            insurance: this.formData.answers.insurance,
-            out_of_state: this.formData.answers.out_of_state,
+            vehicle_type: this.formData.vehicleType.replace('small', 'Small Car').replace('midsize', 'Mid-Size Car').replace('fullsize', 'Full-Size Car'),
+            pickup_date: formatDate(this.formData.pickupDate),
+            return_date: formatDate(this.formData.returnDate),
+            age_license: this.formData.answers.age_license.toUpperCase(),
+            insurance: this.formData.answers.insurance.toUpperCase(),
+            out_of_state: this.formData.answers.out_of_state.toUpperCase(),
             mileage_package: this.formData.selectedMileage,
             daily_rate: quote.base_rate,
             facility_fee: quote.facility_fee,
@@ -357,7 +363,12 @@ class RentalQuoteForm {
             total_daily_rate: quote.total,
             deposit: deposit,
             total_required: totalRequired
-        })
+        };
+
+        Promise.all([
+            emailjs.send('service_b8f7bys', 'customer_quote', emailData),
+            emailjs.send('service_b8f7bys', 'internal_quote', emailData)
+        ])
         .then(() => this.showThankYouMessage())
         .catch((error) => {
             console.error('Email sending failed:', error);
@@ -367,8 +378,8 @@ class RentalQuoteForm {
 
     showThankYouMessage() {
         this.quoteResult.innerHTML = `
-            <h3>Thank You For Submitting a Rental Quote. We Will be in Touch With You Asap.</h3>
-            <p class="contact-info">Warehouse Rent a Car is currently updating rates. If you have any further questions, please contact us by phone call or text message at 540-213-0202 or by email at rental@cawcaw.com.</p>
+            <h3>Thank You For Submitting a Rental Quote. We Will be in Touch With You Shortly.</h3>
+            <p class="contact-info">If you have any further questions, please contact us by phone call or text message at 540-213-0202 or by email at rental@cawcaw.com.</p>
         `;
     }
 
