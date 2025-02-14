@@ -282,24 +282,24 @@ class RentalQuoteForm {
             <div class="rate-options-container">
             ${quote100 ? `
             <div class="rate-option" data-mileage="100">
-                <h4>100 Mile Package - $${quote100.base_rate}/day for ${numDays} days</h4>
-                <p>Base Rate: $${quote100.base_rate}/day (Total: $${(quote100.base_rate * numDays).toFixed(2)})</p>
-                <p>Facility Fee: $${quote100.facility_fee}</p>
-                ${this.formData.answers.insurance === 'no' ? `<p>Insurance: $${quote100.insurance}</p>` : ''}
+                <h4>100 Mile Package - $${quote100.base_rate.toFixed(2)}/day for ${numDays} days</h4>
+                <p>Base Rate: $${quote100.base_rate.toFixed(2)}/day (Total: $${(quote100.base_rate * numDays).toFixed(2)})</p>
+                <p>Facility Fee: $${quote100.facility_fee.toFixed(2)}</p>
+                ${this.formData.answers.insurance === 'no' ? `<p>Insurance: $${quote100.insurance.toFixed(2)}/day (Total: $${(quote100.insurance * numDays).toFixed(2)})</p>` : ''}
                 <p>Tax: $${quote100.tax.toFixed(2)}</p>
-                <p class="total">Total: $${quote100.total}</p>
-                <p class="deposit">Required Deposit: $${this.formData.answers.out_of_state === 'yes' ? quote100.deposit.out_of_state : quote100.deposit.in_state}</p>
+                <p class="total">Total: $${quote100.total.toFixed(2)}</p>
+                <p class="deposit">Required Deposit: $${(this.formData.answers.out_of_state === 'yes' ? quote100.deposit.out_of_state : quote100.deposit.in_state).toFixed(2)}</p>
                 <p class="mileage-info">Additional miles beyond the included 100 miles will be charged at $0.20 per mile.</p>
                 <button class="select-rate" data-mileage="100">Select 100 Mile Package</button>
             </div>` : ''}
             <div class="rate-option" data-mileage="200">
-                <h4>200 Mile Package - $${quote200.base_rate}/day for ${numDays} days</h4>
-                <p>Base Rate: $${quote200.base_rate}/day (Total: $${(quote200.base_rate * numDays).toFixed(2)})</p>
-                <p>Facility Fee: $${quote200.facility_fee}</p>
-                ${this.formData.answers.insurance === 'no' ? `<p>Insurance: $${quote200.insurance}</p>` : ''}
+                <h4>200 Mile Package - $${quote200.base_rate.toFixed(2)}/day for ${numDays} days</h4>
+                <p>Base Rate: $${quote200.base_rate.toFixed(2)}/day (Total: $${(quote200.base_rate * numDays).toFixed(2)})</p>
+                <p>Facility Fee: $${quote200.facility_fee.toFixed(2)}</p>
+                ${this.formData.answers.insurance === 'no' ? `<p>Insurance: $${quote200.insurance.toFixed(2)}/day (Total: $${(quote200.insurance * numDays).toFixed(2)})</p>` : ''}
                 <p>Tax: $${quote200.tax.toFixed(2)}</p>
-                <p class="total">Total: $${quote200.total}</p>
-                <p class="deposit">Required Deposit: $${this.formData.answers.out_of_state === 'yes' ? quote200.deposit.out_of_state : quote200.deposit.in_state}</p>\
+                <p class="total">Total: $${quote200.total.toFixed(2)}</p>
+                <p class="deposit">Required Deposit: $${(this.formData.answers.out_of_state === 'yes' ? quote200.deposit.out_of_state : quote200.deposit.in_state).toFixed(2)}</p>
                 <p class="mileage-info">Additional miles beyond the included 200 miles will be charged at $0.20 per mile.</p>
                 <button class="select-rate" data-mileage="200">Select 200 Mile Package</button>
             </div>
@@ -338,31 +338,43 @@ class RentalQuoteForm {
         const quote = calculateQuote(this.formData.vehicleType, this.formData.selectedMileage, needsInsurance);
         
         const deposit = this.formData.answers.out_of_state === 'yes' ? quote.deposit.out_of_state : quote.deposit.in_state;
-        const totalRequired = parseFloat(deposit) + parseFloat(quote.total);
-        
-        const formatDate = (dateStr) => {
-            const date = new Date(dateStr);
-            return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-        };
+        const pickupDate = new Date(this.formData.pickupDate);
+        const returnDate = new Date(this.formData.returnDate);
+        const numDays = Math.ceil((returnDate - pickupDate) / (1000 * 60 * 60 * 24));
+        const totalInsurance = needsInsurance ? quote.insurance * numDays : 0;
+        const baseTotal = quote.base_rate * numDays;
+        const totalBeforeTax = baseTotal + totalInsurance + quote.facility_fee;
+        const tax = totalBeforeTax * RENTAL_RATES[this.formData.vehicleType].tax_rate; // Recalculate tax
+        const totalDailyRate = totalBeforeTax + tax;
+        const totalRequired = deposit + totalDailyRate;
 
+        // Format dates
+        const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+        
         const emailData = {
             first_name: this.formData.firstName,
             last_name: this.formData.lastName,
             email: this.formData.email,
             phone: this.formData.phone,
-            vehicle_type: this.formData.vehicleType.replace('small', 'Small Car').replace('midsize', 'Mid-Size Car').replace('fullsize', 'Full-Size Car'),
-            pickup_date: formatDate(this.formData.pickupDate),
-            return_date: formatDate(this.formData.returnDate),
-            age_license: this.formData.answers.age_license.toUpperCase(),
-            insurance: this.formData.answers.insurance.toUpperCase(),
-            out_of_state: this.formData.answers.out_of_state.toUpperCase(),
+            vehicle_type: this.formData.vehicleType
+                .replace('small', 'Small Car')
+                .replace('midsize', 'Mid-Size Car')
+                .replace('fullsize', 'Full-Size Car'),
+            pickup_date: pickupDate.toLocaleDateString('en-US', dateOptions),
+            return_date: returnDate.toLocaleDateString('en-US', dateOptions),
+            age_license: this.formData.answers.age_license === 'yes' ? 'Yes' : 'No',
+            insurance: this.formData.answers.insurance === 'yes' ? 'Yes' : 'No',
+            out_of_state: this.formData.answers.out_of_state === 'yes' ? 'Yes' : 'No',
             mileage_package: this.formData.selectedMileage,
-            daily_rate: quote.base_rate,
-            facility_fee: quote.facility_fee,
-            tax: quote.tax.toFixed(2),
-            total_daily_rate: quote.total,
-            deposit: deposit,
-            total_required: totalRequired
+            daily_rate: quote.base_rate.toFixed(2),
+            total_daily_rate: totalDailyRate.toFixed(2),
+            insurance_daily_rate: needsInsurance ? quote.insurance.toFixed(2) : '0.00',
+            total_insurance: totalInsurance.toFixed(2),
+            facility_fee: quote.facility_fee.toFixed(2),
+            tax: tax.toFixed(2),
+            deposit: deposit.toFixed(2),
+            total_required: totalRequired.toFixed(2),
+            number_of_days: numDays
         };
 
         Promise.all([
