@@ -541,14 +541,33 @@ nav a {
 .next-button,
 .continue-button,
 .select-rate {
-    composes: form-button;
+    /* Inheriting form-button styles */
+    width: 100%;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
     background-color: #00007A;
     color: white;
 }
 
 .back-button,
 .cancel-button {
-    composes: form-button;
+    /* Inheriting form-button styles */
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
     background-color: #666;
     color: white;
 }
@@ -694,53 +713,112 @@ nav a {
     box-sizing: border-box;
     width: 100%;
     max-width: 1200px;
-    margin: 0 auto;
+    margin: auto;
 }
 
 #quote-result {
     width: 100%;
-    max-width: 600px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem;
-    background-color: white;
+    padding: 2rem;  /* Make sure this padding is even */
+    background-color: #F3F4F6;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
     display: none;
+    box-sizing: border-box;  
 }
 
 .quote-result .rate-options-container {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
     margin: 20px 0;
-}
-
-.rate-option {
-    flex: 1;
-    min-width: 300px;
-    max-width: 450px;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin: 10px;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.rental-form {
-    width: 100%;
-    max-width: 500px;
-    margin: 2rem auto;
-    padding: 2.5rem;
-    background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    align-items: stretch;
+    justify-content: center;
+    padding: 0;  /* Add this to ensure no padding */
+    width: 100%; /* Add this to ensure full width */
     box-sizing: border-box;
 }
 
+@media (max-width: 768px) {
+    .quote-result .rate-options-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.rate-option {
+    display: inline-block;
+    width: calc(40%);
+    margin: 0 1%;
+}
+
+.rental-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    width: 100%;
+    /* Increase max-width to make the form wider */
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2.5rem;
+    background-color: #F3F4F6;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+  }
+  
 .rental-form .form-group {
     margin-bottom: 1.5rem;
+}
+
+.rental-form .form-group:nth-child(1),
+.rental-form .form-group:nth-child(2),
+.rental-form .form-group:nth-child(3) {
+    grid-column: span 1;
+}
+
+.rental-form .form-group:nth-child(5) {
+    grid-column: 1 / -1;
+    margin-top: 1rem;
+}
+
+.rental-form .form-group:nth-child(5) label {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.rental-form .form-group:nth-child(5) .radio-group {
+    justify-content: flex-start;
+    gap: 2rem;
+}
+
+.rental-form .form-group:nth-child(6),
+.rental-form .form-group:nth-child(7) {
+    grid-column: span 1;
+}
+
+.rental-form .form-group:nth-child(8) {
+    grid-column: span 1;
+}
+
+.rental-form .continue-button {
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: 300px;
+    margin: 1rem auto 0;
+}
+
+@media screen and (max-width: 768px) {
+    .rental-form {
+        grid-template-columns: 1fr;
+        padding: 1.5rem;
+        gap: 1rem;
+    }
+
+    .rental-form .form-group,
+    .rental-form .form-group:nth-child(n) {
+        grid-column: 1 / -1;
+    }
 }
 
 .rental-form input,
@@ -755,9 +833,96 @@ nav a {
 
 .rental-form label {
     display: block;
+}
+
+.vehicle-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Reduced from 250px */
+    gap: 1.5rem;
+    margin: 2rem 0;
+    width: 100%;
+    max-width: 100%;
+}
+
+@media screen and (min-width: 1200px) {
+    .vehicle-options {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .vehicle-option:nth-last-child(2) {
+        grid-column: 1 / 2;  /* Position minivan in first column */
+    }
+    .vehicle-option:last-child {
+        grid-column: 2 / 3;  /* Position passenger van in second column */
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1199px) {
+    .vehicle-options {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .vehicle-options {
+        grid-template-columns: 1fr;
+    }
+}
+
+.vehicle-option {
+    text-align: center;
+    position: relative;
+}
+
+.vehicle-option:hover {
+    transform: translateY(-5px);
+}
+
+
+.vehicle-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+}
+
+.vehicle-option label {
+    cursor: pointer;
+    padding: 2rem;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    display: block;
+    background-color: #f8f9fa;
+    transition: border-color 0.2s ease-in-out,
+                box-shadow 0.2s ease-in-out,
+                transform 0.2s ease-out;
+}
+
+.vehicle-option label:hover {
+    border-color: #1a237e;
+    box-shadow: 0 0 10px rgba(26, 35, 126, 0.2);
+    transform: translateY(-2px);
+}
+
+.vehicle-option img {
+    width: 180px; /* Fixed width */
+    height: 120px; /* Fixed height */
+    object-fit: contain; /* This ensures images maintain aspect ratio */
+    margin-bottom: 0.5rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.vehicle-option span {
+    display: block;
+    font-weight: 500;
+}
+
+.vehicle-option input[type="radio"]:checked + label {
+    border-color: #1a237e;
+    box-shadow: 0 0 10px rgba(26, 35, 126, 0.2);
     margin-bottom: 0.25rem;
     font-weight: 600;
     color: #333;
+    transform: translateY(-2px);
 }
 
 .rental-form button[type="submit"], .select-rate {
@@ -788,9 +953,12 @@ nav a {
 }
 
 .rate-option h4 {
-    color: #00007A;
-    margin-bottom: 1rem;
+    color: white;
+    margin: -1.5rem -1.5rem 1rem -1.5rem;
     font-size: 1.2rem;
+    background-color: #FE641A;
+    padding: 1rem 1.5rem;
+    border-radius: 8px 8px 0 0;
 }
 
 .rate-option p {
@@ -812,6 +980,51 @@ nav a {
     transition: background-color 0.3s ease;
 }
 
+.rate-details {
+    margin: 1rem 0;
+}
+
+.rate-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+}
+
+.rate-table td {
+    padding: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.rate-table td:first-child {
+    font-weight: 500;
+    color: #666;
+}
+
+.rate-table td:last-child {
+    text-align: right;
+    font-weight: 600;
+}
+
+.rate-table .total-row {
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-top: 2px solid #ddd;
+}
+
+.rate-table .total-row td {
+    padding-top: 1rem;
+    color: #00007A;
+}
+
+.rate-table .deposit-row {
+    color: #666;
+    font-style: italic;
+}
+
+.rate-table .deposit-row td:last-child {
+    font-weight: 500;
+}
+
 .rental-form button[type="submit"]:hover {
     background-color: #000055;
 }
@@ -829,9 +1042,12 @@ nav a {
 
 .radio-group {
     display: flex;
-    justify-content: center;
-    gap: 3rem;
-    margin: 1.5rem 0;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+    padding: 1rem;
+    background-color: #F3F4F6;
+    border-radius: 8px;
 }
 
 .radio-group label {
@@ -840,6 +1056,9 @@ nav a {
     gap: 0.5rem;
     cursor: pointer;
     transition: transform 0.2s ease;
+    background-color: white; 
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .radio-group label:hover {
@@ -859,8 +1078,8 @@ nav a {
 }
 
 .radio-group input[type="radio"]:checked {
-    background-color: #00007A;
-    border-color: #00007A;
+    background-color: #FE641A;
+    border-color: #FE641A;
 }
 
 .radio-group input[type="radio"]:checked::after {
@@ -877,7 +1096,7 @@ nav a {
 
 .button-group {
     display: flex;
-    justify-content: center;
+    justify-content: center; /* or space-between, space-around, etc. */
     gap: 1rem;
     margin-top: 2rem;
 }
@@ -979,6 +1198,119 @@ nav a {
     outline: none;
     border-color: #00007A;
     box-shadow: 0 0 0 2px rgba(0, 0, 122, 0.1);
+}
+
+.continue-button {
+    background-color: #00007A;
+    color: white;
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.continue-button:hover {
+    background-color: #000055;
+}
+
+a {
+    text-decoration: none;
+}
+
+.left-hero a {
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+.fleet-info a {
+    text-transform: uppercase;
+    font-size: 14px;
+}
+.rental-form textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.vehicle-selection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.vehicle-card {
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.vehicle-card:hover {
+    border-color: #007bff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.vehicle-card input[type="radio"] {
+    display: none;
+}
+
+.vehicle-card input[type="radio"]:checked + img {
+    border: 2px solid #007bff;
+    padding: 3px;
+    border-radius: 4px;
+}
+
+.vehicle-card input[type="radio"]:checked + img + h4 {
+    color: #007bff;
+}
+
+.vehicle-card img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.vehicle-card h4 {
+    margin: 0.5rem 0;
+    color: #333;
+}
+
+.vehicle-card p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+@media screen and (max-width: 768px) {
+    .vehicle-selection-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .vehicle-card img {
+        max-width: 150px;
+    }
+
+    .vehicle-card h4 {
+        font-size: 1.1rem;
+    }
+
+    .vehicle-card p {
+        font-size: 0.85rem;
+    }
 }
 
 .continue-button {

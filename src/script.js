@@ -71,19 +71,109 @@ class RentalQuoteForm {
     initializeForm() {
         this.quoteForm = document.getElementById('quote-form');
         this.quoteResult = document.getElementById('quote-result');
-        this.pickupDateInput = document.getElementById('pickup-date');
-        this.returnDateInput = document.getElementById('return-date');
 
         if (!this.quoteForm || !this.quoteResult) {
             console.error('Required form elements not found');
             return;
         }
 
-        this.setupDateInputs();
         this.setupFormSubmission();
     }
 
+    setupFormSubmission() {
+        this.quoteForm.addEventListener('submit', (e) => this.handleFormSubmit(e));
+    }
+
+    handleFormSubmit(e) {
+        e.preventDefault();
+        
+        const phoneInput = document.getElementById('phone').value;
+        if (!validatePhoneNumber(phoneInput)) {
+            alert('Please enter a valid phone number (e.g., 123-456-7890)');
+            return;
+        }
+        
+        this.formData = {
+            firstName: document.getElementById('first-name').value,
+            lastName: document.getElementById('last-name').value,
+            email: document.getElementById('email').value,
+            phone: phoneInput,
+            answers: {}
+        };
+
+        this.showVehicleDate();
+    }
+
+    createVehicleDateHTML() {
+        return `
+            <div class="form-group">
+                <label>Select Vehicle Type</label>
+                <div class="vehicle-options">
+                    <div class="vehicle-option">
+                        <input type="radio" id="small" name="vehicleType" value="small" required>
+                        <label for="small">
+                            <img src="/images/smallcar.png" alt="Small Car">
+                            <span>Small Car</span>
+                        </label>
+                    </div>
+                    <div class="vehicle-option">
+                        <input type="radio" id="midsize" name="vehicleType" value="midsize" required>
+                        <label for="midsize">
+                            <img src="/images/midcar.png" alt="Mid-Size Car">
+                            <span>Mid-Size Car</span>
+                        </label>
+                    </div>
+                    <div class="vehicle-option">
+                        <input type="radio" id="fullsize" name="vehicleType" value="fullsize" required>
+                        <label for="fullsize">
+                            <img src="/images/fullcar.png" alt="Full-Size Car">
+                            <span>Full-Size Car</span>
+                        </label>
+                    </div>
+                    <div class="vehicle-option">
+                        <input type="radio" id="minivan" name="vehicleType" value="minivan" required>
+                        <label for="minivan">
+                            <img src="/images/minivan.png" alt="Minivan">
+                            <span>Minivan</span>
+                        </label>
+                    </div>
+                    <div class="vehicle-option">
+                        <input type="radio" id="passenger-van" name="vehicleType" value="passenger-van" required>
+                        <label for="passenger-van">
+                            <img src="/images/15PassengerVan.png" alt="15 Passenger Van">
+                            <span>15 Passenger Van</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="pickup-date">Pickup Date:</label>
+                <input type="date" id="pickup-date" name="pickup-date" required>
+            </div>
+            <div class="form-group">
+                <label for="return-date">Return Date:</label>
+                <input type="date" id="return-date" name="return-date" required>
+            </div>
+            <div class="button-group">
+                <button type="button" class="back-button">Back</button>
+                <button type="button" class="cancel-button">Cancel</button>
+                <button type="button" class="next-button">Continue</button>
+            </div>
+        `;
+    }
+
+    showVehicleDate() {
+        this.quoteForm.style.display = 'none';
+        this.quoteResult.style.display = 'block';
+        this.quoteResult.innerHTML = this.createVehicleDateHTML();
+        this.setupVehicleDateHandlers();
+        this.setupDateInputs();
+    }
+
     setupDateInputs() {
+        this.pickupDateInput = document.getElementById('pickup-date');
+        this.returnDateInput = document.getElementById('return-date');
+        
         const today = new Date().toISOString().split('T')[0];
 
         if (this.pickupDateInput) {
@@ -116,27 +206,52 @@ class RentalQuoteForm {
         }
     }
 
-    setupFormSubmission() {
-        this.quoteForm.addEventListener('submit', (e) => this.handleFormSubmit(e));
-    }
+    setupVehicleDateHandlers() {
+        const nextButton = this.quoteResult.querySelector('.next-button');
+        const backButton = this.quoteResult.querySelector('.back-button');
+        const cancelButton = this.quoteResult.querySelector('.cancel-button');
 
-    handleFormSubmit(e) {
-        e.preventDefault();
-        
-        if (!this.validateInitialForm()) return;
-        
-        this.formData = {
-            firstName: document.getElementById('first-name').value,
-            lastName: document.getElementById('last-name').value,
-            email: document.getElementById('email').value,
-            phone: document.getElementById('phone').value,
-            vehicleType: document.getElementById('vehicle-type').value,
-            pickupDate: this.pickupDateInput.value,
-            returnDate: this.returnDateInput.value,
-            answers: {}
-        };
+        if (nextButton) {
+            nextButton.addEventListener('click', () => {
+                const selectedVehicle = this.quoteResult.querySelector('input[name="vehicleType"]:checked');
+                if (!selectedVehicle) {
+                    alert('Please select a vehicle type.');
+                    return;
+                }
 
-        this.showNextQuestion();
+                if (!this.pickupDateInput.value || !this.returnDateInput.value) {
+                    alert('Please select both pickup and return dates.');
+                    return;
+                }
+
+                const pickupDate = new Date(this.pickupDateInput.value);
+                const returnDate = new Date(this.returnDateInput.value);
+
+                if (returnDate <= pickupDate) {
+                    alert('Return date must be after pickup date.');
+                    return;
+                }
+
+                this.formData.vehicleType = selectedVehicle.value;
+                this.formData.pickupDate = this.pickupDateInput.value;
+                this.formData.returnDate = this.returnDateInput.value;
+
+                this.showNextQuestion();
+            });
+        }
+
+        if (backButton) {
+            backButton.addEventListener('click', () => {
+                this.quoteForm.style.display = 'block';
+                this.quoteResult.style.display = 'none';
+            });
+        }
+
+        if (cancelButton) {
+            cancelButton.addEventListener('click', () => {
+                window.location.href = '/quote/';
+            });
+        }
     }
 
     validateInitialForm() {
@@ -201,9 +316,7 @@ class RentalQuoteForm {
             this.quoteResult.innerHTML = this.createQuestionHTML(this.questions[this.currentQuestionIndex]);
             this.setupQuestionHandlers();
         } else {
-            this.quoteForm.style.display = 'block';
-            this.quoteResult.style.display = 'none';
-            this.currentQuestionIndex = -1;
+            this.showVehicleDate();
         }
     }
 
@@ -282,24 +395,86 @@ class RentalQuoteForm {
             <div class="rate-options-container">
             ${quote100 ? `
             <div class="rate-option" data-mileage="100">
-                <h4>100 Mile Package - $${quote100.base_rate.toFixed(2)}/day for ${numDays} days</h4>
-                <p>Base Rate: $${quote100.base_rate.toFixed(2)}/day (Total: $${(quote100.base_rate * numDays).toFixed(2)})</p>
-                <p>Facility Fee: $${quote100.facility_fee.toFixed(2)}</p>
-                ${this.formData.answers.insurance === 'no' ? `<p>Insurance: $${quote100.insurance.toFixed(2)}/day (Total: $${(quote100.insurance * numDays).toFixed(2)})</p>` : ''}
-                <p>Tax: $${quote100.tax.toFixed(2)}</p>
-                <p class="total">Total: $${quote100.total.toFixed(2)}</p>
-                <p class="deposit">Required Deposit: $${(this.formData.answers.out_of_state === 'yes' ? quote100.deposit.out_of_state : quote100.deposit.in_state).toFixed(2)}</p>
+                <h4>100 Mile Package</h4>
+                <div class="rate-details">
+                    <table class="rate-table">
+                        <tr>
+                            <td>Daily Rate:</td>
+                            <td>$${quote100.base_rate}/day</td>
+                        </tr>
+                        <tr>
+                            <td>Number of Days:</td>
+                            <td>${numDays}</td>
+                        </tr>
+                        <tr>
+                            <td>Rental Total:</td>
+                            <td>$${(quote100.base_rate * numDays).toFixed(2)}</td>
+                        </tr>
+                        <tr>
+                            <td>Facility Fee:</td>
+                            <td>$${quote100.facility_fee.toFixed(2)}</td>
+                        </tr>
+                        ${this.formData.answers.insurance === 'no' ? `
+                        <tr>
+                            <td>Insurance:</td>
+                            <td>$${quote100.insurance}/day</td>
+                        </tr>` : ''}
+                        <tr>
+                            <td>Tax:</td>
+                            <td>$${quote100.tax.toFixed(2)}</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td>Total:</td>
+                            <td>$${quote100.total.toFixed(2)}</td>
+                        </tr>
+                        <tr class="deposit-row">
+                            <td>Required Deposit:</td>
+                            <td>$${this.formData.answers.out_of_state === 'yes' ? quote100.deposit.out_of_state : quote100.deposit.in_state}</td>
+                        </tr>
+                    </table>
+                </div>
                 <p class="mileage-info">Additional miles beyond the included 100 miles will be charged at $0.20 per mile.</p>
                 <button class="select-rate" data-mileage="100">Select 100 Mile Package</button>
             </div>` : ''}
             <div class="rate-option" data-mileage="200">
-                <h4>200 Mile Package - $${quote200.base_rate.toFixed(2)}/day for ${numDays} days</h4>
-                <p>Base Rate: $${quote200.base_rate.toFixed(2)}/day (Total: $${(quote200.base_rate * numDays).toFixed(2)})</p>
-                <p>Facility Fee: $${quote200.facility_fee.toFixed(2)}</p>
-                ${this.formData.answers.insurance === 'no' ? `<p>Insurance: $${quote200.insurance.toFixed(2)}/day (Total: $${(quote200.insurance * numDays).toFixed(2)})</p>` : ''}
-                <p>Tax: $${quote200.tax.toFixed(2)}</p>
-                <p class="total">Total: $${quote200.total.toFixed(2)}</p>
-                <p class="deposit">Required Deposit: $${(this.formData.answers.out_of_state === 'yes' ? quote200.deposit.out_of_state : quote200.deposit.in_state).toFixed(2)}</p>
+                <h4>200 Mile Package</h4>
+                <div class="rate-details">
+                    <table class="rate-table">
+                        <tr>
+                            <td>Daily Rate:</td>
+                            <td>$${quote200.base_rate}/day</td>
+                        </tr>
+                        <tr>
+                            <td>Number of Days:</td>
+                            <td>${numDays}</td>
+                        </tr>
+                        <tr>
+                            <td>Rental Total:</td>
+                            <td>$${(quote200.base_rate * numDays).toFixed(2)}</td>
+                        </tr>
+                        <tr>
+                            <td>Facility Fee:</td>
+                            <td>$${quote200.facility_fee.toFixed(2)}</td>
+                        </tr>
+                        ${this.formData.answers.insurance === 'no' ? `
+                        <tr>
+                            <td>Insurance:</td>
+                            <td>$${quote200.insurance}/day</td>
+                        </tr>` : ''}
+                        <tr>
+                            <td>Tax:</td>
+                            <td>$${quote200.tax.toFixed(2)}</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td>Total:</td>
+                            <td>$${quote200.total.toFixed(2)}</td>
+                        </tr>
+                        <tr class="deposit-row">
+                            <td>Required Deposit:</td>
+                            <td>$${this.formData.answers.out_of_state === 'yes' ? quote200.deposit.out_of_state : quote200.deposit.in_state}</td>
+                        </tr>
+                    </table>
+                </div>
                 <p class="mileage-info">Additional miles beyond the included 200 miles will be charged at $0.20 per mile.</p>
                 <button class="select-rate" data-mileage="200">Select 200 Mile Package</button>
             </div>
