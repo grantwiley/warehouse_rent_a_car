@@ -1,3 +1,35 @@
+// Hamburger menu functionality
+const hamburger = document.querySelector('.hamburger');
+const nav = document.querySelector('nav');
+const header = document.querySelector('.header');
+
+if (hamburger && nav) {
+    hamburger.addEventListener('click', () => {
+        nav.classList.toggle('active');
+        hamburger.classList.toggle('active');
+    });
+}
+
+// Floating header functionality
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+    const currentScroll = window.pageYOffset;
+    
+    if (currentScroll <= 0) {
+        header.classList.remove('scroll-up');
+        return;
+    }
+    
+    if (currentScroll > lastScroll && !header.classList.contains('scroll-down')) {
+        header.classList.remove('scroll-up');
+        header.classList.add('scroll-down');
+    } else if (currentScroll < lastScroll && header.classList.contains('scroll-down')) {
+        header.classList.remove('scroll-down');
+        header.classList.add('scroll-up');
+    }
+    lastScroll = currentScroll;
+});
+
 // Date validation utilities
 function validateDate(dateInput) {
     if (!dateInput.value) return true;
@@ -534,7 +566,9 @@ class RentalQuoteForm {
             vehicle_type: this.formData.vehicleType
                 .replace('small', 'Small Car')
                 .replace('midsize', 'Mid-Size Car')
-                .replace('fullsize', 'Full-Size Car'),
+                .replace('fullsize', 'Full-Size Car')
+                .replace('minivan', 'Minivan')
+                .replace('passenger-van', 'Passenger Van'),
             pickup_date: pickupDate.toLocaleDateString('en-US', dateOptions),
             return_date: returnDate.toLocaleDateString('en-US', dateOptions),
             age_license: this.formData.answers.age_license === 'yes' ? 'Yes' : 'No',
