@@ -342,6 +342,8 @@ class RentalQuoteForm {
         this.formData.pickupDate = this.pickupDateInput.value;
         this.formData.returnDate = this.returnDateInput.value;
 
+        // Reset question index when moving forward from vehicle selection
+        this.currentQuestionIndex = -1;
         this.showNextQuestion();
       });
     }
@@ -426,6 +428,9 @@ class RentalQuoteForm {
       );
       this.setupQuestionHandlers();
     } else {
+      // Reset form data related to questions when going back to vehicle selection
+      this.formData.answers = {};
+      this.currentQuestionIndex = -1;
       this.showVehicleDate();
     }
   }
@@ -469,8 +474,6 @@ class RentalQuoteForm {
 
     if (backButton) {
       backButton.addEventListener('click', () => {
-        const currentQuestion = this.questions[this.currentQuestionIndex];
-        delete this.formData.answers[currentQuestion.name];
         this.showPreviousQuestion();
       });
     }
@@ -483,12 +486,14 @@ class RentalQuoteForm {
 
     // Restore previous answer if it exists
     const currentQuestion = this.questions[this.currentQuestionIndex];
-    if (this.formData.answers[currentQuestion.name]) {
+    if (this.formData.answers && this.formData.answers[currentQuestion.name]) {
       const value = this.formData.answers[currentQuestion.name];
       const radio = this.quoteResult.querySelector(
         `input[name="${currentQuestion.name}"][value="${value}"]`
       );
-      if (radio) radio.checked = true;
+      if (radio) {
+        radio.checked = true;
+      }
     }
   }
 
