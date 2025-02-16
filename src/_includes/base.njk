@@ -51,21 +51,28 @@
         <p class="copyright">Copyright © 2025 Warehouse Rent A Car. <br>All Rights Reserved.</p>
     </div>
 
-    <script>
-        var APP_ID = 'b6619c93e9f3aaa67ed61b965a9b63c0nG6nseBhzIxP6N+wva89GIPgrOuMKMyvdYCjH+VFhkU=';
-        window.chekkitSettings = {app_id: APP_ID};
-    </script>
-    <script async defer>
-        (function() {
-            var d = document,
-            h = d.getElementsByTagName('head')[0],
-            s = d.createElement('script');
-            s.type = 'text/javascript';
-            s.async = true;
-            s.src = 'https://webchat.chekkit.io/v1/webchat.js';
-            h.appendChild(s);
-        })();
-    </script>
+      <script>
+    (function() {
+      var APP_ID = "b6619c93e9f3aaa67ed61b965a9b63c0nG6nseBhzIxP6N+wva89GIPgrOuMKMyvdYCjH+VFhkU="; // Replace with your actual APP-ID
+
+      var checkitScript = document.createElement('script');
+      checkitScript.async = true;
+      checkitScript.src = 'https://webchat.chekkit.io/v1/webchat.js'; // Replace with the actual CheckIt script URL
+
+      checkitScript.onload = function() {
+        // Initialize CheckIt after the script has loaded
+        if (typeof CheckIt !== 'undefined') {
+          CheckIt.init({
+            appId: APP_ID,
+          });
+        } else {
+          console.error("CheckIt object not found.  Ensure the script loaded correctly.");
+        }
+      };
+
+      document.head.appendChild(checkitScript);
+    })();
+  </script>
 
     <script src="/script.js"></script>
     <script src="/carousel.js"></script>

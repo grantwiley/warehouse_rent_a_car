@@ -1665,7 +1665,8 @@ a {
         gap: 0.5rem;
     }
 
-    .hours-list p {
-        font-size: 0.95rem;
-    }
+.hours-list p {
+    font-size: 0.95rem;
+}
+
 }
