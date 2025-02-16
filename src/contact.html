@@ -4,27 +4,24 @@ title: Contact
 ---
     <div class="quote-section">
         <h2>Contact Us</h2>
-        <form id="contact-form" class="rental-form">
-            <div class="form-group">
-                <label for="first-name">First Name:</label>
-                <input type="text" id="first-name" name="first-name" required>
+        <div class="contact-info">
+            <div class="map-container">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.0975419005!2d-79.07343832392733!3d38.15191097159439!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89b4a47bf3c76137%3A0x9b0e2a3c44c61f85!2s537%20Richmond%20Rd%2C%20Staunton%2C%20VA%2024401!5e0!3m2!1sen!2sus!4v1708116122983!5m2!1sen!2sus"
+                    width="100%" 
+                    height="450" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
             </div>
-            <div class="form-group">
-                <label for="last-name">Last Name:</label>
-                <input type="text" id="last-name" name="last-name" required>
+            <div class="contact-details">
+                <h3>Get in Touch</h3>
+                <p><strong>537 Richmond Rd, Staunton, VA 24401</strong></p>
+                <p><strong><a href="tel:5402130202">(540) 213-0202</a></strong></p>
+                <p><a href="mailto:rental@cawcaw.com">rental@cawcaw.com</a></p>
+                <a href="/quote" class="quote-button">Get A Quote</a>
             </div>
-            <div class="form-group">
-                <label for="phone">Phone Number:</label>
-                <input type="tel" id="phone" name="phone" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Email Address:</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="message">Message:</label>
-                <textarea id="message" name="message" rows="5" required></textarea>
-            </div>
-            <button type="submit" class="continue-button">Send Message</button>
-        </form>
+        </div>
     </div>
