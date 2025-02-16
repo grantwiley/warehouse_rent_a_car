@@ -268,7 +268,6 @@ nav.active ul li:nth-child(3) { animation-delay: 0.3s; }
     padding: 2rem 8rem 4rem 8rem;
     background: linear-gradient(to bottom, #f1f3f5, #e9ecef);
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    min-height: 450px;
 }
 
 .left-hero {
@@ -358,7 +357,7 @@ nav.active ul li:nth-child(3) { animation-delay: 0.3s; }
 @media screen and (max-width: 768px) {
     .hero {
         flex-direction: column;
-        padding: 2rem 1.5rem;
+        padding: 5rem 1.5rem 2rem;
         gap: 2rem;
         text-align: center;
         min-height: auto;
@@ -408,7 +407,7 @@ nav.active ul li:nth-child(3) { animation-delay: 0.3s; }
 
 @media screen and (max-width: 480px) {
     .hero {
-        padding: 1.5rem 1rem;
+        padding: 5rem 1rem 2rem;
     }
 
     .left-hero h1 {
