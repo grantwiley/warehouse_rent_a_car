@@ -3,9 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }} - Warehouse Rent A Car</title>
+    <meta name="description" content="Warehouse Rent A Car in Staunton, VA. Quality rental cars at affordable rates. Guaranteed reservations and convenient location for all your rental needs.">
+    <meta name="keywords" content="Warehouse Rent A Car, Rental Cars, Rental Cars Staunton, Rental">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="{{ title }} - Warehouse Rent A Car">
+    <meta property="og:description" content="Quality rental cars in Staunton, VA. Reliable vehicles at competitive rates with guaranteed reservations.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://warehouserentacar.com{{ page.url }}">
+    <meta property="og:image" content="https://warehouserentacar.com/images/logo.png">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://warehouserentacar.com{{ page.url }}">
+    
+    <title>{{ title }} - Warehouse Rent A Car | Staunton, VA</title>
     <link rel="stylesheet" href="/styles.css">
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+
+    <!-- Schema.org markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CarRental",
+      "name": "Warehouse Rent A Car",
+      "image": "https://warehouserentacar.com/images/logo.png",
+      "description": "Quality car rentals in Staunton, VA. Reliable vehicles and guaranteed reservations.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "537 Richmond Avenue",
+        "addressLocality": "Staunton",
+        "addressRegion": "VA",
+        "postalCode": "24401",
+        "addressCountry": "US"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "38.1496",
+        "longitude": "-79.0717"
+      },
+      "url": "https://warehouserentacar.com",
+      "telephone": "+15402130202",
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Rental Services",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Car Rental",
+              "description": "Quality rental cars for all your needs"
+            }
+          }
+        ]
+      }
+    }
+    </script>
 </head>
 <body>
     <div class="header">
