@@ -123,10 +123,28 @@ nav a {
     font-weight: 600;
     font-size: 1rem;
     transition: color 0.3s ease;
+    position: relative;
+}
+
+nav a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background-color: #00007A;
+    transition: width 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
 }
 
 nav a:hover {
     color: #00007A;
+}
+
+nav a:hover::after {
+    width: 100%;
+    opacity: 1;
 }
 
 .call-button {
