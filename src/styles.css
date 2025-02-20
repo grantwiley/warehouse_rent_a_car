@@ -956,7 +956,7 @@ nav.active ul li:nth-child(3) { animation-delay: 0.3s; }
     justify-content: center;
     min-height: 100vh; /* Changed from 60vh */
     height: auto;
-    padding: 4rem 2rem;
+    padding: 2rem;
     box-sizing: border-box;
     width: 100%;
     max-width: 1200px;
@@ -967,7 +967,7 @@ nav.active ul li:nth-child(3) { animation-delay: 0.3s; }
 
 @media screen and (max-width: 768px) {
     .quote-section {
-        padding: 5rem 1.5rem 2rem;
+        padding: 2rem 1.5rem;
         min-height: -webkit-fill-available; /* Use available height on mobile */
         min-height: 100vh;
         padding-bottom: env(safe-area-inset-bottom); /* Account for bottom safe area on iOS */
