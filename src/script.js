@@ -228,109 +228,133 @@ class RentalQuoteForm {
     const todayStr = today.toISOString().split('T')[0];
     const maxDateStr = maxDate.toISOString().split('T')[0];
     
-    // Don't set initial value for return date to avoid validation issues
-    
-    // Detect Safari
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    // Detect mobile browsers
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
     if (this.pickupDateInput) {
         this.pickupDateInput.min = todayStr;
         this.pickupDateInput.max = maxDateStr;
         
-        let pickupTimeout;
         this.pickupDateInput.addEventListener('change', (e) => {
             if (isHandlingDate) return;
+            isHandlingDate = true;
             
-            // Clear any existing timeout
-            if (pickupTimeout) {
-                clearTimeout(pickupTimeout);
-            }
-            
-            // Set a small timeout to debounce the event (especially for Safari)
-            pickupTimeout = setTimeout(() => {
-                isHandlingDate = true;
-                try {
-                    if (validateDate(this.pickupDateInput)) {
-                        // Set minimum return date to day after pickup
-                        const minReturn = new Date(this.pickupDateInput.value + 'T00:00:00');
-                        minReturn.setDate(minReturn.getDate() + 1);
-                        const minReturnStr = minReturn.toISOString().split('T')[0];
-                        
-                        // Update return date input constraints
-                        this.returnDateInput.min = minReturnStr;
-                        this.returnDateInput.max = maxDateStr;
-                        
-                        // Clear return date if it's before new minimum
-                        if (this.returnDateInput.value) {
-                            const returnDate = new Date(this.returnDateInput.value + 'T00:00:00');
-                            if (returnDate <= new Date(this.pickupDateInput.value + 'T00:00:00')) {
-                                this.returnDateInput.value = '';
-                            }
-                        }
-                        
-                        // If return date is empty, suggest a date one day after pickup
-                        if (!this.returnDateInput.value) {
-                            // Just update the min attribute, don't set a default value
-                            // This allows the datepicker to properly show the calendar starting from the min date
+            try {
+                if (validateDate(this.pickupDateInput)) {
+                    // Set minimum return date to day after pickup
+                    const minReturn = new Date(this.pickupDateInput.value + 'T00:00:00');
+                    minReturn.setDate(minReturn.getDate() + 1);
+                    const minReturnStr = minReturn.toISOString().split('T')[0];
+                    
+                    // Update return date input constraints
+                    this.returnDateInput.min = minReturnStr;
+                    this.returnDateInput.max = maxDateStr;
+                    
+                    // Clear return date if it's before new minimum
+                    if (this.returnDateInput.value) {
+                        const returnDate = new Date(this.returnDateInput.value + 'T00:00:00');
+                        if (returnDate <= new Date(this.pickupDateInput.value + 'T00:00:00')) {
+                            this.returnDateInput.value = '';
                         }
                     }
-                } finally {
-                    isHandlingDate = false;
                 }
-            }, isSafari ? 100 : 0); // Add a small delay for Safari
+            } finally {
+                isHandlingDate = false;
+            }
         });
     }
 
     if (this.returnDateInput) {
-        // Don't set min attribute until pickup date is selected
-        // Only set max constraint initially
+        // Set constraints but no initial value
         this.returnDateInput.max = maxDateStr;
         
-        let returnTimeout;
+        // Simple focus event that ensures value is empty on first interaction
         this.returnDateInput.addEventListener('focus', (e) => {
-            // When return date gets focus, check if pickup date is set
+            // When return date gets focus, check if pickup date is set first
             if (!this.pickupDateInput.value) {
                 alert('Please select a pickup date first.');
-                // Don't clear focus, but let user switch to pickup date
+                this.pickupDateInput.focus();
+                e.preventDefault();
+                return false;
+            }
+            
+            // For mobile browsers, if the value is the same as today's date,
+            // and it appears to be auto-filled rather than user-selected,
+            // clear it to prevent the validation error
+            if (isMobile && this.returnDateInput.value === todayStr) {
+                // Check if we've just focused this field for the first time
+                if (!this.returnDateInput.getAttribute('data-user-selected')) {
+                    // This is likely an auto-filled value, clear it
+                    this.returnDateInput.value = '';
+                    
+                    // Create a clone of the input to replace it (more aggressive approach)
+                    if (e.isTrusted) { // Only for real user events
+                        const parent = this.returnDateInput.parentNode;
+                        const clone = this.returnDateInput.cloneNode(true);
+                        
+                        // Ensure the clone has the right settings
+                        clone.value = '';
+                        
+                        // Set min date from pickup date if available
+                        if (this.pickupDateInput.value) {
+                            const minReturn = new Date(this.pickupDateInput.value + 'T00:00:00');
+                            minReturn.setDate(minReturn.getDate() + 1);
+                            clone.min = minReturn.toISOString().split('T')[0];
+                        }
+                        
+                        // Replace the input with the clone
+                        parent.replaceChild(clone, this.returnDateInput);
+                        this.returnDateInput = clone;
+                        
+                        // Set up the event listeners again
+                        this.setupReturnDateListeners();
+                        
+                        // Give focus to the new input
+                        setTimeout(() => {
+                            this.returnDateInput.focus();
+                        }, 10);
+                    }
+                }
+            }
+        });
+        
+        // Set up initial return date listeners
+        this.setupReturnDateListeners();
+    }
+  }
+  
+  // Extract return date listeners to a separate method so we can reattach them if needed
+  setupReturnDateListeners() {
+    // Handle date selection
+    this.returnDateInput.addEventListener('change', (e) => {
+        if (isHandlingDate) return;
+        isHandlingDate = true;
+        
+        try {
+            // Mark this field as having been interacted with
+            this.returnDateInput.setAttribute('data-user-selected', 'true');
+            
+            if (!this.pickupDateInput.value) {
+                alert('Please select a pickup date first.');
+                this.returnDateInput.value = '';
                 this.pickupDateInput.focus();
                 return;
             }
-        });
-        
-        this.returnDateInput.addEventListener('change', (e) => {
-            if (isHandlingDate) return;
             
-            // Clear any existing timeout
-            if (returnTimeout) {
-                clearTimeout(returnTimeout);
-            }
-            
-            // Set a small timeout to debounce the event (especially for Safari)
-            returnTimeout = setTimeout(() => {
-                isHandlingDate = true;
-                try {
-                    if (!this.pickupDateInput.value) {
-                        alert('Please select a pickup date first.');
-                        this.returnDateInput.value = '';
-                        this.pickupDateInput.focus();
-                        return;
-                    }
-                    
-                    if (validateDate(this.returnDateInput)) {
-                        const returnDate = new Date(this.returnDateInput.value + 'T00:00:00');
-                        const pickupDate = new Date(this.pickupDateInput.value + 'T00:00:00');
-                        
-                        if (returnDate <= pickupDate) {
-                            alert('Return date must be at least one day after pickup date.');
-                            this.returnDateInput.value = '';
-                        }
-                    }
-                } finally {
-                    isHandlingDate = false;
+            if (validateDate(this.returnDateInput)) {
+                const returnDate = new Date(this.returnDateInput.value + 'T00:00:00');
+                const pickupDate = new Date(this.pickupDateInput.value + 'T00:00:00');
+                
+                if (returnDate <= pickupDate) {
+                    alert('Return date must be at least one day after pickup date.');
+                    this.returnDateInput.value = '';
                 }
-            }, isSafari ? 100 : 0); // Add a small delay for Safari
-        });
-    }
+            }
+        } finally {
+            isHandlingDate = false;
+        }
+    });
+  }
 }
 
   setupVehicleDateHandlers() {
