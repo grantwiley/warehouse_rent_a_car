@@ -227,7 +227,9 @@ class RentalQuoteForm {
 
     const todayStr = today.toISOString().split('T')[0];
     const maxDateStr = maxDate.toISOString().split('T')[0];
-
+    
+    // Don't set initial value for return date to avoid validation issues
+    
     // Detect Safari
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     
@@ -252,7 +254,10 @@ class RentalQuoteForm {
                         // Set minimum return date to day after pickup
                         const minReturn = new Date(this.pickupDateInput.value + 'T00:00:00');
                         minReturn.setDate(minReturn.getDate() + 1);
-                        this.returnDateInput.min = minReturn.toISOString().split('T')[0];
+                        const minReturnStr = minReturn.toISOString().split('T')[0];
+                        
+                        // Update return date input constraints
+                        this.returnDateInput.min = minReturnStr;
                         this.returnDateInput.max = maxDateStr;
                         
                         // Clear return date if it's before new minimum
@@ -261,6 +266,12 @@ class RentalQuoteForm {
                             if (returnDate <= new Date(this.pickupDateInput.value + 'T00:00:00')) {
                                 this.returnDateInput.value = '';
                             }
+                        }
+                        
+                        // If return date is empty, suggest a date one day after pickup
+                        if (!this.returnDateInput.value) {
+                            // Just update the min attribute, don't set a default value
+                            // This allows the datepicker to properly show the calendar starting from the min date
                         }
                     }
                 } finally {
@@ -271,10 +282,21 @@ class RentalQuoteForm {
     }
 
     if (this.returnDateInput) {
-        this.returnDateInput.min = todayStr;
+        // Don't set min attribute until pickup date is selected
+        // Only set max constraint initially
         this.returnDateInput.max = maxDateStr;
         
         let returnTimeout;
+        this.returnDateInput.addEventListener('focus', (e) => {
+            // When return date gets focus, check if pickup date is set
+            if (!this.pickupDateInput.value) {
+                alert('Please select a pickup date first.');
+                // Don't clear focus, but let user switch to pickup date
+                this.pickupDateInput.focus();
+                return;
+            }
+        });
+        
         this.returnDateInput.addEventListener('change', (e) => {
             if (isHandlingDate) return;
             
@@ -290,6 +312,7 @@ class RentalQuoteForm {
                     if (!this.pickupDateInput.value) {
                         alert('Please select a pickup date first.');
                         this.returnDateInput.value = '';
+                        this.pickupDateInput.focus();
                         return;
                     }
                     
@@ -330,11 +353,18 @@ class RentalQuoteForm {
           return;
         }
 
-        const pickupDate = new Date(this.pickupDateInput.value);
-        const returnDate = new Date(this.returnDateInput.value);
+        const pickupDate = new Date(this.pickupDateInput.value + 'T00:00:00');
+        const returnDate = new Date(this.returnDateInput.value + 'T00:00:00');
 
+        // Ensure dates are valid and create proper date objects
+        if (isNaN(pickupDate.getTime()) || isNaN(returnDate.getTime())) {
+          alert('Please select valid dates.');
+          return;
+        }
+
+        // Check if return date is at least one day after pickup date
         if (returnDate <= pickupDate) {
-          alert('Return date must be after pickup date.');
+          alert('Return date must be at least one day after pickup date.');
           return;
         }
 
@@ -374,11 +404,18 @@ class RentalQuoteForm {
       return false;
     }
 
-    const pickupDate = new Date(this.pickupDateInput.value);
-    const returnDate = new Date(this.returnDateInput.value);
+    const pickupDate = new Date(this.pickupDateInput.value + 'T00:00:00');
+    const returnDate = new Date(this.returnDateInput.value + 'T00:00:00');
 
+    // Ensure dates are valid
+    if (isNaN(pickupDate.getTime()) || isNaN(returnDate.getTime())) {
+      alert('Please select valid dates.');
+      return false;
+    }
+
+    // Check if return date is at least one day after pickup date
     if (returnDate <= pickupDate) {
-      alert('Return date must be after pickup date.');
+      alert('Return date must be at least one day after pickup date.');
       return false;
     }
 
@@ -498,8 +535,8 @@ class RentalQuoteForm {
   }
 
   showRateOptions() {
-    const pickupDate = new Date(this.formData.pickupDate);
-    const returnDate = new Date(this.formData.returnDate);
+    const pickupDate = new Date(this.formData.pickupDate + 'T00:00:00');
+    const returnDate = new Date(this.formData.returnDate + 'T00:00:00');
     const numDays = Math.ceil(
       (returnDate - pickupDate) / (1000 * 60 * 60 * 24)
     );
@@ -683,8 +720,8 @@ class RentalQuoteForm {
       this.formData.answers.out_of_state === 'yes'
         ? quote.deposit.out_of_state
         : quote.deposit.in_state;
-    const pickupDate = new Date(this.formData.pickupDate);
-    const returnDate = new Date(this.formData.returnDate);
+    const pickupDate = new Date(this.formData.pickupDate + 'T00:00:00');
+    const returnDate = new Date(this.formData.returnDate + 'T00:00:00');
     const numDays = Math.ceil(
       (returnDate - pickupDate) / (1000 * 60 * 60 * 24)
     );
