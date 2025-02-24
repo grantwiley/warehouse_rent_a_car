@@ -953,24 +953,23 @@ nav.active ul li:nth-child(3) { animation-delay: 0.3s; }
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    min-height: auto;
+    justify-content: center;
+    min-height: 100vh; /* Changed from 60vh */
     height: auto;
     padding: 2rem;
-    padding-top: 5rem;
     box-sizing: border-box;
     width: 100%;
     max-width: 1200px;
     margin: auto;
-    position: relative;
-    -webkit-transform: translate3d(0,0,0); /* For iOS */
+    position: relative; /* Added */
+    -webkit-transform: translate3d(0,0,0); /* Added for iOS */
 }
 
 @media screen and (max-width: 768px) {
     .quote-section {
         padding: 2rem 1.5rem;
-        min-height: auto;
-        padding-top: 5rem;
+        min-height: -webkit-fill-available; /* Use available height on mobile */
+        min-height: 100vh;
         padding-bottom: env(safe-area-inset-bottom); /* Account for bottom safe area on iOS */
     }
 }
@@ -1028,8 +1027,9 @@ nav.active ul li:nth-child(3) { animation-delay: 0.3s; }
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
     width: 100%;
+    /* Increase max-width to make the form wider */
     max-width: 1200px;
-    margin: 1rem auto;
+    margin: 2rem auto;
     padding: 2.5rem;
     background-color: #F3F4F6;
     border-radius: 12px;
@@ -1530,7 +1530,7 @@ nav.active ul li:nth-child(3) { animation-delay: 0.3s; }
     grid-template-columns: 1fr;
     gap: 2rem;
     max-width: 1200px;
-    margin: 1rem auto;
+    margin: 2rem auto;
     opacity: 0;
     animation: fadeInContent 0.8s ease-out forwards;
 }
