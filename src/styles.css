@@ -1121,9 +1121,23 @@ nav.active ul li:nth-child(3) { animation-delay: 0.3s; }
         width: 100%;
     }
 
-    .next-button,
-    .back-button,
+    /* Change button order on mobile */
+    .next-button {
+        order: 1; /* Display first */
+        width: 100%;
+        max-width: 300px;
+        margin: 0;
+    }
+    
+    .back-button {
+        order: 2; /* Display second */
+        width: 100%;
+        max-width: 300px;
+        margin: 0;
+    }
+    
     .cancel-button {
+        order: 3; /* Display last */
         width: 100%;
         max-width: 300px;
         margin: 0;
