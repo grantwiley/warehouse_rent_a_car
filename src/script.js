@@ -133,13 +133,13 @@ class RentalQuoteForm {
 
   handleFormSubmit(e) {
     e.preventDefault();
-
+  
     const phoneInput = document.getElementById('phone').value;
     if (!validatePhoneNumber(phoneInput)) {
       alert('Please enter a valid phone number (e.g., 123-456-7890)');
       return;
     }
-
+  
     this.formData = {
       firstName: document.getElementById('first-name').value,
       lastName: document.getElementById('last-name').value,
@@ -147,9 +147,36 @@ class RentalQuoteForm {
       phone: phoneInput,
       answers: {},
     };
-
+  
+    // Clear any existing handlers before showing vehicle date
+    // This helps prevent duplicate handlers or conflicts
+    this.cleanupEventListeners();
+    
+    // Show vehicle selection page
     this.showVehicleDate();
   }
+
+  cleanupEventListeners() {
+    // This helps prevent multiple bound events when transitioning between screens
+    if (this.quoteResult) {
+      const oldNextButtons = this.quoteResult.querySelectorAll('.next-button');
+      const oldBackButtons = this.quoteResult.querySelectorAll('.back-button');
+      const oldCancelButtons = this.quoteResult.querySelectorAll('.cancel-button');
+      
+      oldNextButtons.forEach(button => {
+        button.replaceWith(button.cloneNode(true));
+      });
+      
+      oldBackButtons.forEach(button => {
+        button.replaceWith(button.cloneNode(true));
+      });
+      
+      oldCancelButtons.forEach(button => {
+        button.replaceWith(button.cloneNode(true));
+      });
+    }
+  }
+  
 
   createVehicleDateHTML() {
     return `
@@ -210,11 +237,20 @@ class RentalQuoteForm {
   }
 
   showVehicleDate() {
+    if (!this.quoteForm || !this.quoteResult) {
+      console.error('Required form elements not found');
+      return;
+    }
+  
     this.quoteForm.style.display = 'none';
     this.quoteResult.style.display = 'block';
     this.quoteResult.innerHTML = this.createVehicleDateHTML();
-    this.setupVehicleDateHandlers();
-    this.setupDateInputs();
+    
+    // Make sure we set up event handlers after updating the HTML
+    setTimeout(() => {
+      this.setupVehicleDateHandlers();
+      this.setupDateInputs();
+    }, 0);
   }
 
   setupDateInputs() {
