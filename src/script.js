@@ -363,7 +363,11 @@ class RentalQuoteForm {
     const cancelButton = this.quoteResult.querySelector('.cancel-button');
 
     if (nextButton) {
-      nextButton.addEventListener('click', () => {
+      nextButton.addEventListener('click', (e) => {
+        // Prevent any default actions or event propagation
+        e.preventDefault();
+        e.stopPropagation();
+        
         const selectedVehicle = this.quoteResult.querySelector(
           'input[name="vehicleType"]:checked'
         );
@@ -399,19 +403,34 @@ class RentalQuoteForm {
         // Reset question index when moving forward from vehicle selection
         this.currentQuestionIndex = -1;
         this.showNextQuestion();
+        
+        // Return false to prevent any additional event handling
+        return false;
       });
     }
 
     if (backButton) {
-      backButton.addEventListener('click', () => {
+      backButton.addEventListener('click', (e) => {
+        // Prevent any default actions or event propagation
+        e.preventDefault();
+        e.stopPropagation();
+        
         this.quoteForm.style.display = 'block';
         this.quoteResult.style.display = 'none';
+        
+        return false;
       });
     }
 
     if (cancelButton) {
-      cancelButton.addEventListener('click', () => {
+      cancelButton.addEventListener('click', (e) => {
+        // Prevent any default actions or event propagation
+        e.preventDefault();
+        e.stopPropagation();
+        
         window.location.href = '/quote/';
+        
+        return false;
       });
     }
   }
@@ -502,7 +521,11 @@ class RentalQuoteForm {
     const cancelButton = this.quoteResult.querySelector('.cancel-button');
 
     if (nextButton) {
-      nextButton.addEventListener('click', () => {
+      nextButton.addEventListener('click', (e) => {
+        // Prevent any default actions or event propagation
+        e.preventDefault();
+        e.stopPropagation();
+        
         const radioButtons = this.quoteResult.querySelectorAll(
           'input[type="radio"]'
         );
@@ -523,27 +546,42 @@ class RentalQuoteForm {
                 'us directly at 540-213-0202 to set up your rental.'
             );
             window.location.href = '/quote/';
-            return;
+            return false;
           }
 
           this.showNextQuestion();
         } else {
           alert('Please select an answer before continuing.');
         }
+        
+        return false;
       });
     }
 
     if (backButton) {
-      backButton.addEventListener('click', () => {
+      backButton.addEventListener('click', (e) => {
+        // Prevent any default actions or event propagation
+        e.preventDefault();
+        e.stopPropagation();
+        
         this.showPreviousQuestion();
+        
+        return false;
       });
     }
 
     if (cancelButton) {
-      cancelButton.addEventListener('click', () => {
+      cancelButton.addEventListener('click', (e) => {
+        // Prevent any default actions or event propagation
+        e.preventDefault();
+        e.stopPropagation();
+        
         window.location.href = '/quote/';
+        
+        return false;
       });
     }
+  }
 
     // Restore previous answer if it exists
     const currentQuestion = this.questions[this.currentQuestionIndex];
@@ -716,20 +754,41 @@ class RentalQuoteForm {
 
     rateButtons.forEach((button) => {
       button.addEventListener('click', (e) => {
+        // Prevent any default actions or event propagation
+        e.preventDefault();
+        e.stopPropagation();
+        
         this.formData.selectedMileage = e.target.dataset.mileage;
         this.sendEmail();
+        
+        return false;
       });
     });
 
     if (backButton) {
-      backButton.addEventListener('click', () => this.showPreviousQuestion());
+      backButton.addEventListener('click', (e) => {
+        // Prevent any default actions or event propagation
+        e.preventDefault();
+        e.stopPropagation();
+        
+        this.showPreviousQuestion();
+        
+        return false;
+      });
     }
 
     if (cancelButton) {
-      cancelButton.addEventListener('click', () => {
+      cancelButton.addEventListener('click', (e) => {
+        // Prevent any default actions or event propagation
+        e.preventDefault();
+        e.stopPropagation();
+        
         window.location.href = '/quote/';
+        
+        return false;
       });
     }
+  }
   }
 
   sendEmail() {
