@@ -953,24 +953,19 @@ nav.active ul li:nth-child(3) { animation-delay: 0.3s; }
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 100vh; /* Changed from 60vh */
-    height: auto;
-    padding: 2rem;
+    justify-content: flex-start;
+    padding: 5rem 2rem 2rem;
     box-sizing: border-box;
     width: 100%;
     max-width: 1200px;
     margin: auto;
-    position: relative; /* Added */
-    -webkit-transform: translate3d(0,0,0); /* Added for iOS */
+    position: relative;
+    -webkit-transform: translate3d(0,0,0);
 }
 
 @media screen and (max-width: 768px) {
     .quote-section {
-        padding: 2rem 1.5rem;
-        min-height: -webkit-fill-available; /* Use available height on mobile */
-        min-height: 100vh;
-        padding-bottom: env(safe-area-inset-bottom); /* Account for bottom safe area on iOS */
+        padding: 5rem 1.5rem 2rem;
     }
 }
 
@@ -1668,11 +1663,13 @@ nav.active ul li:nth-child(3) { animation-delay: 0.3s; }
 @media screen and (max-width: 767px) {
     .contact-info {
         grid-template-columns: 1fr;
-        padding: 1rem;
+        padding: 0;
+        gap: 1.5rem;
     }
     
     .map-container {
         height: 300px;
+        margin-bottom: 0;
     }
     
     .map-container iframe {
@@ -1681,6 +1678,7 @@ nav.active ul li:nth-child(3) { animation-delay: 0.3s; }
     
     .contact-details {
         padding: 1.5rem;
+        margin-top: 0;
     }
     
     .contact-details h3 {
@@ -1943,4 +1941,88 @@ a {
     font-size: 0.95rem;
 }
 
+}
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .hero {
+        padding: 2rem 4rem;
+        gap: 2rem;
+    }
+
+    .fleet-container {
+        grid-template-columns: repeat(3, 1fr);
+        padding: 2rem;
+    }
+
+    .left-hero h1 {
+        font-size: 2.2rem;
+    }
+
+    nav ul {
+        margin-left: -2rem;
+        margin-right: -2rem;
+    }
+
+    nav ul li {
+        padding: 0 2rem;
+    }
+
+    .rental-form {
+        padding: 2rem;
+        gap: 1.5rem;
+    }
+
+    .vehicle-options {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .vehicle-option img {
+        width: 160px;
+        height: 100px;
+    }
+}
+
+@media screen and (min-width: 481px) and (max-width: 768px) {
+    .hero {
+        padding: 5rem 2rem 2rem;
+    }
+
+    .fleet-container {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 1.5rem;
+    }
+
+    .header {
+        padding: 0.75rem 1.5rem;
+    }
+
+    .logo img {
+        width: 180px;
+    }
+
+    .rental-form {
+        grid-template-columns: 1fr;
+        padding: 1.5rem;
+    }
+
+    .vehicle-options {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        padding: 0 1.5rem;
+    }
+
+    .vehicle-option img {
+        width: 140px;
+        height: 90px;
+    }
+
+    .reviews-container {
+        height: 300px;
+    }
+}
+
+/* Update the existing mobile media query */
+@media screen and (max-width: 480px) {
+    /* ...existing mobile styles... */
 }
