@@ -1,43 +1,150 @@
 // Global variable to prevent multiple date handling
 let isHandlingDate = false;
 
-// Hamburger menu functionality
+// Mobile Navigation Improvements
 const hamburger = document.querySelector('.hamburger');
 const nav = document.querySelector('nav');
 const header = document.querySelector('.header');
+const body = document.querySelector('body');
 
 if (hamburger && nav) {
-  hamburger.addEventListener('click', () => {
-    nav.classList.toggle('active');
-    hamburger.classList.toggle('active');
+  // Add accessibility attributes
+  hamburger.setAttribute('aria-label', 'Toggle menu');
+  hamburger.setAttribute('aria-expanded', 'false');
+  hamburger.setAttribute('role', 'button');
+  hamburger.setAttribute('tabindex', '0');
+  
+  // Add hamburger icon markup if not present
+  if (hamburger.childElementCount === 0) {
+    hamburger.innerHTML = `
+      <span></span>
+      <span></span>
+      <span></span>
+    `;
+  }
+
+  // Handle both click and keyboard events for accessibility
+  hamburger.addEventListener('click', toggleMenu);
+  hamburger.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleMenu();
+    }
   });
+
+  // Close menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (nav.classList.contains('active') && 
+        !nav.contains(e.target) && 
+        !hamburger.contains(e.target)) {
+      toggleMenu();
+    }
+  });
+
+  // Close menu when pressing escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && nav.classList.contains('active')) {
+      toggleMenu();
+    }
+  });
+  
+  // Handle nav link clicks (close menu on mobile when nav link is clicked)
+  const navLinks = nav.querySelectorAll('a');
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 768 && nav.classList.contains('active')) {
+        toggleMenu();
+      }
+    });
+  });
+}
+
+function toggleMenu() {
+  nav.classList.toggle('active');
+  hamburger.classList.toggle('active');
+  hamburger.setAttribute('aria-expanded', nav.classList.contains('active'));
+  
+  // Lock body scroll when menu is open
+  if (nav.classList.contains('active')) {
+    body.style.overflow = 'hidden';
+  } else {
+    body.style.overflow = '';
+  }
 }
 
 // Floating header functionality
 let lastScroll = 0;
+let scrollTimer = null;
+const scrollThreshold = 5; // Minimum scroll amount to trigger header behavior
+
 window.addEventListener('scroll', () => {
-  const currentScroll = window.pageYOffset;
-
-  if (currentScroll <= 0) {
-    header.classList.remove('scroll-up');
-    return;
+  // Throttle scroll events
+  if (scrollTimer === null) {
+    scrollTimer = setTimeout(() => {
+      scrollTimer = null;
+      
+      const currentScroll = window.pageYOffset;
+      
+      // Always show header at the very top of the page
+      if (currentScroll <= 0) {
+        header.classList.remove('scroll-up');
+        header.classList.remove('scroll-down');
+        return;
+      }
+      
+      // Only react to significant scroll amounts
+      if (Math.abs(currentScroll - lastScroll) < scrollThreshold) return;
+      
+      // Hide header when scrolling down
+      if (currentScroll > lastScroll && !header.classList.contains('scroll-down')) {
+        header.classList.remove('scroll-up');
+        header.classList.add('scroll-down');
+      } 
+      // Show header when scrolling up
+      else if (currentScroll < lastScroll && header.classList.contains('scroll-down')) {
+        header.classList.remove('scroll-down');
+        header.classList.add('scroll-up');
+      }
+      
+      lastScroll = currentScroll;
+    }, 50);
   }
-
-  if (
-    currentScroll > lastScroll &&
-    !header.classList.contains('scroll-down')
-  ) {
-    header.classList.remove('scroll-up');
-    header.classList.add('scroll-down');
-  } else if (
-    currentScroll < lastScroll &&
-    header.classList.contains('scroll-down')
-  ) {
-    header.classList.remove('scroll-down');
-    header.classList.add('scroll-up');
-  }
-  lastScroll = currentScroll;
 });
+
+// Touch event handling
+let touchStartY = 0;
+const touchThreshold = 10;
+
+document.addEventListener('touchstart', (e) => {
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+document.addEventListener('touchmove', (e) => {
+  if (scrollTimer === null) {
+    scrollTimer = setTimeout(() => {
+      scrollTimer = null;
+      
+      const currentY = e.touches[0].clientY;
+      const diff = touchStartY - currentY;
+      
+      // Only react to significant touch movements
+      if (Math.abs(diff) < touchThreshold) return;
+      
+      // Hide header when scrolling down with touch
+      if (diff > 0 && !header.classList.contains('scroll-down')) {
+        header.classList.remove('scroll-up');
+        header.classList.add('scroll-down');
+      } 
+      // Show header when scrolling up with touch
+      else if (diff < 0 && header.classList.contains('scroll-down')) {
+        header.classList.remove('scroll-down');
+        header.classList.add('scroll-up');
+      }
+      
+      touchStartY = currentY;
+    }, 50);
+  }
+}, { passive: true });
 
 function validateDate(dateInput) {
     if (!dateInput.value) return false;
