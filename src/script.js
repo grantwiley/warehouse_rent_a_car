@@ -748,6 +748,7 @@ class RentalQuoteForm {
                 <p class="mileage-info">Additional miles beyond the included 200 miles will be charged at $0.20 per mile.</p>
                 <button class="select-rate" data-mileage="200">Select 200 Mile Package</button>
             </div>
+            </div>
             <div class="button-group">
                 <button type="button" class="back-button">Back</button>
                 <button type="button" class="cancel-button">Cancel</button>

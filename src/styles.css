@@ -136,6 +136,7 @@ nav {
 
 nav ul {
     display: flex;
+    justify-content: space-between;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -143,6 +144,7 @@ nav ul {
 
 nav ul li {
     padding: 0;
+    margin: 0;
 }
 
 @media screen and (min-width: 769px) {
@@ -152,7 +154,7 @@ nav ul li {
         position: relative;
     }
     nav ul li {
-        padding: 0 4rem;
+        padding: 0 1rem;
         position: relative;
     }
     nav ul li:not(:last-child)::after {
@@ -1286,12 +1288,19 @@ nav.active ul li:nth-child(5) { animation-delay: 0.5s; }
     animation: fadeInUp 0.5s ease forwards;
 }
 
-.quote-result .rate-options-container {
+#quote-result .rate-options-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: clamp(1rem, 3vw, 1.5rem);
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    margin-bottom: 2rem;
     width: 100%;
-    box-sizing: border-box;
+}
+
+#quote-result .rate-option {
+    margin-bottom: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .rental-form {
