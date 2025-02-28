@@ -317,10 +317,20 @@ class RentalQuoteForm {
   }
 
   scrollToTop() {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+    // Get the form's position relative to the viewport
+    const formElement = this.quoteResult || this.quoteForm;
+    if (formElement) {
+      const formRect = formElement.getBoundingClientRect();
+      const absoluteFormTop = window.pageYOffset + formRect.top;
+      
+      // Add a small offset (e.g., 20px) to give some breathing room at the top
+      const offset = 20;
+      
+      window.scrollTo({
+        top: absoluteFormTop - offset,
+        behavior: 'smooth'
+      });
+    }
   }
 
   showVehicleDate() {
