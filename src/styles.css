@@ -1290,7 +1290,7 @@ nav.active ul li:nth-child(5) { animation-delay: 0.5s; }
 
 #quote-result .rate-options-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
     margin-bottom: 2rem;
     width: 100%;
@@ -1301,6 +1301,22 @@ nav.active ul li:nth-child(5) { animation-delay: 0.5s; }
     height: 100%;
     display: flex;
     flex-direction: column;
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+@media screen and (max-width: 768px) {
+    #quote-result .rate-options-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin: 1rem 0;
+    }
+
+    #quote-result .rate-option {
+        padding: 1rem;
+    }
 }
 
 .rental-form {
