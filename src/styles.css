@@ -224,7 +224,7 @@ nav a:hover::after {
 }
 
 /* Enhanced mobile navigation */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1024px) { /* Changed from 768px to 1024px */
     body {
         padding-top: 70px;
         -webkit-overflow-scrolling: touch; 
@@ -272,9 +272,13 @@ nav a:hover::after {
     nav ul {
         flex-direction: column;
         align-items: center;
-        width: 100%;
-        gap: 1.5rem;
-        margin-top: 1.5rem;
+        gap: 2rem;
+    }
+
+    nav ul li {
+        opacity: 0;
+        animation: slideIn 0.3s ease forwards;
+        animation-delay: calc(var(--i) * 0.1s);
     }
 
     nav a {
@@ -297,6 +301,22 @@ nav a:hover::after {
         z-index: 1600;
         box-shadow: var(--shadow-md);
         padding: 1rem;
+    }
+}
+
+/* Adjust intermediate breakpoint for smoother transition */
+@media screen and (min-width: 1025px) and (max-width: 1200px) {
+    .logo img {
+        width: 180px;
+    }
+
+    nav ul {
+        gap: 1.5rem;
+    }
+
+    .call-button {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
     }
 }
 

@@ -4,6 +4,9 @@ node_modules/
 # Build output
 _site/
 
+# Documentation
+docs/
+
 # macOS system files
 .DS_Store
 .DS_Store?
