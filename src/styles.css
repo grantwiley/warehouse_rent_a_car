@@ -1531,22 +1531,21 @@ nav.active ul li:nth-child(5) { animation-delay: 0.5s; }
 
 .vehicle-options {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    margin: 2rem 0;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Reduced from 200px */
+    gap: 1rem; /* Reduced from 1.5rem */
+    margin: 1rem 0; /* Reduced from 2rem */
     width: 100%;
     max-width: 100%;
 }
 
 @media screen and (min-width: 1200px) {
     .vehicle-options {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(5, 1fr); /* Force 5 columns on desktop */
+        gap: 1rem;
     }
-    .vehicle-option:nth-last-child(2) {
-        grid-column: 1 / 2;  /* Position minivan in first column */
-    }
-    .vehicle-option:last-child {
-        grid-column: 2 / 3;  /* Position passenger van in second column */
+    
+    .vehicle-option {
+        min-width: 0; /* Allow shrinking */
     }
 }
 
@@ -1620,7 +1619,7 @@ nav.active ul li:nth-child(5) { animation-delay: 0.5s; }
 
 .vehicle-option label {
     cursor: pointer;
-    padding: clamp(1rem, 3vw, 2rem);
+    padding: 1rem; /* Reduced from clamp(1rem, 3vw, 2rem) */
     border: 2px solid var(--border-color);
     border-radius: var(--border-radius-md);
     display: block;
@@ -1638,9 +1637,9 @@ nav.active ul li:nth-child(5) { animation-delay: 0.5s; }
 
 .vehicle-option img {
     width: 100%;
-    max-width: 180px;
+    max-width: 140px; /* Reduced from 180px */
     height: auto;
-    max-height: 120px;
+    max-height: 100px; /* Reduced from 120px */
     object-fit: contain;
     margin: 0 auto 0.5rem;
     transition: transform 0.3s ease;
