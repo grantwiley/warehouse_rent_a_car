@@ -1558,45 +1558,42 @@ nav.active ul li:nth-child(5) { animation-delay: 0.5s; }
         overflow-x: auto;
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
-        gap: 1rem;
-        padding-bottom: 1.5rem;
-        margin: 1rem -1rem;
+        gap: 0.75rem;  /* Reduced gap */
+        padding-bottom: 1rem;  /* Reduced padding */
+        margin: 0.75rem -1rem;  /* Reduced margin */
         padding-left: 1rem;
         padding-right: 1rem;
     }
 
     .vehicle-option {
-        flex: 0 0 80%;
+        flex: 0 0 160px;  /* Fixed width, smaller than before */
         scroll-snap-align: center;
-        min-width: 220px;
+        min-width: 160px;  /* Match flex-basis */
     }
 
     .vehicle-option label {
-        padding: 1rem;
+        padding: 0.75rem;  /* Reduced padding */
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        height: 100%;  /* Ensure consistent height */
     }
 
-    /* Show scroll affordance */
-    .vehicle-options::after {
-        content: '';
-        flex: 0 0 1rem;
+    .vehicle-option img {
+        width: 120px;  /* Fixed width */
+        height: 80px;  /* Fixed height */
+        object-fit: contain;  /* Maintain aspect ratio */
+        margin-bottom: 0.5rem;
     }
-    
-    /* Hide scrollbar for cleaner look */
-    .vehicle-options::-webkit-scrollbar {
-        height: 4px;
-    }
-    
-    .vehicle-options::-webkit-scrollbar-thumb {
-        background-color: rgba(0, 0, 122, 0.2);
-        border-radius: 4px;
-    }
-    
-    .vehicle-options::-webkit-scrollbar-track {
-        background-color: rgba(0, 0, 0, 0.05);
+
+    .vehicle-option span {
+        font-size: 0.9rem;  /* Consistent font size */
+        font-weight: 500;
+        text-align: center;
+        display: block;
+        width: 100%;
+        white-space: nowrap;  /* Prevent text wrapping */
     }
 }
 
