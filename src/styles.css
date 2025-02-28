@@ -226,7 +226,7 @@ nav a:hover::after {
 /* Enhanced mobile navigation */
 @media screen and (max-width: 1024px) { /* Changed from 768px to 1024px */
     body {
-        padding-top: 70px;
+        padding-top: 90px; /* Increased from 70px */
         -webkit-overflow-scrolling: touch; 
     }
 
