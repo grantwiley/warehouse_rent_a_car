@@ -361,59 +361,17 @@ class RentalQuoteForm {
                         minReturn.setDate(minReturn.getDate() + 1);
                         this.returnDateInput.min = minReturn.toISOString().split('T')[0];
                         this.returnDateInput.max = maxDateStr;
-                        
-                        // Clear return date if it's before new minimum
-                        if (this.returnDateInput.value) {
-                            const returnDate = new Date(this.returnDateInput.value + 'T00:00:00');
-                            if (returnDate <= new Date(this.pickupDateInput.value + 'T00:00:00')) {
-                                this.returnDateInput.value = '';
-                            }
-                        }
                     }
                 } finally {
                     isHandlingDate = false;
                 }
-            }, isSafari ? 100 : 0); // Add a small delay for Safari
+            }, isSafari ? 100 : 0);
         });
     }
 
     if (this.returnDateInput) {
         this.returnDateInput.min = todayStr;
         this.returnDateInput.max = maxDateStr;
-        
-        let returnTimeout;
-        this.returnDateInput.addEventListener('change', (e) => {
-            if (isHandlingDate) return;
-            
-            // Clear any existing timeout
-            if (returnTimeout) {
-                clearTimeout(returnTimeout);
-            }
-            
-            // Set a small timeout to debounce the event (especially for Safari)
-            returnTimeout = setTimeout(() => {
-                isHandlingDate = true;
-                try {
-                    if (!this.pickupDateInput.value) {
-                        alert('Please select a pickup date first.');
-                        this.returnDateInput.value = '';
-                        return;
-                    }
-                    
-                    if (validateDate(this.returnDateInput)) {
-                        const returnDate = new Date(this.returnDateInput.value + 'T00:00:00');
-                        const pickupDate = new Date(this.pickupDateInput.value + 'T00:00:00');
-                        
-                        if (returnDate <= pickupDate) {
-                            alert('Return date must be at least one day after pickup date.');
-                            this.returnDateInput.value = '';
-                        }
-                    }
-                } finally {
-                    isHandlingDate = false;
-                }
-            }, isSafari ? 100 : 0); // Add a small delay for Safari
-        });
     }
 }
 
@@ -437,11 +395,40 @@ class RentalQuoteForm {
           return;
         }
 
-        const pickupDate = new Date(this.pickupDateInput.value);
-        const returnDate = new Date(this.returnDateInput.value);
+        // Validate dates when continue button is clicked
+        const pickupDate = new Date(this.pickupDateInput.value + 'T00:00:00');
+        const returnDate = new Date(this.returnDateInput.value + 'T00:00:00');
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
+        // Check if pickup date is a Sunday
+        if (pickupDate.getDay() === 0) {
+          alert('We are closed on Sundays. Please select another pickup date.');
+          this.pickupDateInput.value = '';
+          return;
+        }
+
+        // Check if pickup date is in the past
+        if (pickupDate < today) {
+          alert('Please select a future pickup date.');
+          this.pickupDateInput.value = '';
+          return;
+        }
+
+        // Check if return date is before pickup date
         if (returnDate <= pickupDate) {
-          alert('Return date must be after pickup date.');
+          alert('Return date must be at least one day after pickup date.');
+          this.returnDateInput.value = '';
+          return;
+        }
+
+        // Calculate 3 months from today
+        const threeMonthsFromNow = new Date(today);
+        threeMonthsFromNow.setMonth(today.getMonth() + 3);
+
+        // Check if dates are more than 3 months away
+        if (pickupDate > threeMonthsFromNow || returnDate > threeMonthsFromNow) {
+          alert('Bookings cannot be made more than 3 months in advance. Please select closer dates.');
           return;
         }
 
