@@ -316,12 +316,20 @@ class RentalQuoteForm {
         `;
   }
 
+  scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }
+
   showVehicleDate() {
     this.quoteForm.style.display = 'none';
     this.quoteResult.style.display = 'block';
     this.quoteResult.innerHTML = this.createVehicleDateHTML();
     this.setupVehicleDateHandlers();
     this.setupDateInputs();
+    this.scrollToTop();
   }
 
   setupDateInputs() {
@@ -516,6 +524,7 @@ class RentalQuoteForm {
         this.questions[this.currentQuestionIndex]
       );
       this.setupQuestionHandlers();
+      this.scrollToTop();
     } else {
       this.showRateOptions();
     }
@@ -528,6 +537,7 @@ class RentalQuoteForm {
         this.questions[this.currentQuestionIndex]
       );
       this.setupQuestionHandlers();
+      this.scrollToTop();
     } else {
       // Reset form data related to questions when going back to vehicle selection
       this.formData.answers = {};
@@ -631,6 +641,7 @@ class RentalQuoteForm {
     );
     this.quoteResult.innerHTML = rateOptionsHTML;
     this.setupRateOptionHandlers();
+    this.scrollToTop();
   }
 
   createRateOptionsHTML(quote100, quote200, numDays) {
@@ -846,6 +857,7 @@ class RentalQuoteForm {
             <h3>Thank You For Submitting a Rental Quote. We Will be in Touch With You Shortly.</h3>
             <p class="contact-info">If you have any further questions, please contact us by phone call or text message at 540-213-0202 or by email at rental@cawcaw.com.</p>
         `;
+    this.scrollToTop();
   }
 
   showErrorMessage() {
@@ -853,6 +865,7 @@ class RentalQuoteForm {
             <h3>An error occurred while submitting your quote.</h3>
             <p class="contact-info">Please try again or contact us directly at 540-213-0202.</p>
         `;
+    this.scrollToTop();
   }
 }
 
