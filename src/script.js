@@ -408,6 +408,13 @@ class RentalQuoteForm {
           return;
         }
 
+        // Check if return date is a Sunday
+        if (returnDate.getDay() === 0) {
+          alert('We are closed on Sundays. Please select another return date.');
+          this.returnDateInput.value = '';
+          return;
+        }
+
         // Check if pickup date is in the past
         if (pickupDate < today) {
           alert('Please select a future pickup date.');
