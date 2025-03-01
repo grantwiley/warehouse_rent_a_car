@@ -342,7 +342,7 @@ class RentalQuoteForm {
     this.quoteResult.innerHTML = this.createVehicleDateHTML();
     this.setupVehicleDateHandlers();
     this.setupDateInputs();
-    this.scrollToTop();
+    this.scrollToTop(); // Keep this only for the vehicle/date screen
   }
 
   setupDateInputs() {
@@ -537,7 +537,7 @@ class RentalQuoteForm {
         this.questions[this.currentQuestionIndex]
       );
       this.setupQuestionHandlers();
-      this.scrollToTop();
+      // scrollToTop() removed from here
     } else {
       this.showRateOptions();
     }
