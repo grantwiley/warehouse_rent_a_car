@@ -1074,34 +1074,43 @@ nav.active ul li:nth-child(5) { animation-delay: 0.5s; }
 
 @media screen and (max-width: 768px) {
     .button-group {
-        flex-direction: column;  /* Changed from column-reverse */
+        flex-direction: column;
         gap: 0.75rem;
         padding: 0;
         align-items: center;
         width: 100%;
     }
 
-    /* Explicitly set the order of buttons */
-    .next-button,
-    .continue-button {
-        order: -1;  /* This will move these buttons to the top */
+    /* Specify buttons only within button-group */
+    .button-group .next-button,
+    .button-group .continue-button {
+        order: -1;
         width: 100%;
         max-width: 300px;
         margin: 0;
     }
 
-    .back-button {
+    .button-group .back-button {
         order: 1;
         width: 100%;
         max-width: 300px;
         margin: 0;
     }
 
-    .cancel-button {
+    .button-group .cancel-button {
         order: 2;
         width: 100%;
         max-width: 300px;
         margin: 0;
+    }
+
+    /* Keep rental form continue button at bottom */
+    .rental-form .continue-button {
+        grid-column: 1 / -1;
+        width: 100%;
+        max-width: 300px;
+        margin: 1rem auto 0;
+        order: initial; /* Reset any order property */
     }
 }
 
@@ -2538,7 +2547,6 @@ a {
     .continue-button:hover {
         transform: translateY(-2px);
     }
-}
 
 @media (hover: none) {
     .book-now-button:active,
@@ -2636,6 +2644,7 @@ a {
     .continue-button:active {
         transform: scale(0.98);
     }
+
 
 
 
