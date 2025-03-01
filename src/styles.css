@@ -1066,13 +1066,29 @@ nav.active ul li:nth-child(5) { animation-delay: 0.5s; }
 
 .button-group {
     display: flex;
-    justify-content: center;
     gap: 1rem;
-    margin-top: 2rem;
-    flex-wrap: wrap;
-    width: 100%;
-    padding: 0 1rem;
-    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+@media screen and (max-width: 768px) {
+    .button-group {
+        flex-direction: column-reverse; /* Change direction for mobile */
+        gap: 0.75rem;
+        padding: 0;
+        align-items: center;
+        width: 100%;
+    }
+
+    .next-button,
+    .back-button,
+    .cancel-button,
+    .continue-button {
+        width: 100%;
+        max-width: 300px;
+        margin: 0;
+    }
 }
 
 .form-button {
@@ -2560,7 +2576,6 @@ a {
     text-align: center;
     max-width: var(--container-width);
     margin: 0 auto;
-    padding: var(--spacing-md);
 }
 
 .thank-you-message .contact-info {
@@ -2608,6 +2623,7 @@ a {
     .continue-button:active {
         transform: scale(0.98);
     }
+
 
 
 
