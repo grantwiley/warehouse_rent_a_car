@@ -207,10 +207,13 @@ class RentalQuoteForm {
       },
       {
         id: 'insurance',
-        text:
-          'Do all renters carry full coverage automobile insurance with ' +
-          'comprehensive and collision deductibles no higher than $500?',
+        text: 'Do all renters carry full coverage automobile insurance with comprehensive and collision deductibles no higher than $500?',
         name: 'insurance',
+      },
+      {
+        id: 'liability-insurance',
+        text: 'Do all renters carry liability insurance?',
+        name: 'liability_insurance',
       },
       {
         id: 'out-of-state',
@@ -574,13 +577,35 @@ class RentalQuoteForm {
           const currentQuestion = this.questions[this.currentQuestionIndex];
           this.formData.answers[currentQuestion.name] = selectedAnswer.value;
 
-          if (
-            currentQuestion.id === 'age-license' &&
-            selectedAnswer.value === 'no'
-          ) {
+          // Handle age-license question
+          if (currentQuestion.id === 'age-license' && selectedAnswer.value === 'no') {
             alert(
               'We do rent to customers under the age of 25, but you must call ' +
-                'us directly at 540-213-0202 to set up your rental.'
+              'us directly at 540-213-0202 to set up your rental.'
+            );
+            window.location.href = '/quote/';
+            return;
+          }
+
+          // Handle insurance questions
+          if (currentQuestion.id === 'insurance') {
+            if (selectedAnswer.value === 'no') {
+              // Show liability insurance question next
+              this.showNextQuestion();
+            } else {
+              // If they have full coverage, automatically set liability to yes and skip the question
+              this.formData.answers['liability_insurance'] = 'yes';
+              this.currentQuestionIndex++; // Skip liability question
+              this.showNextQuestion();
+            }
+            return;
+          }
+
+          // Handle liability insurance question
+          if (currentQuestion.id === 'liability-insurance' && selectedAnswer.value === 'no') {
+            alert(
+              'We apologize, but we cannot rent to customers without liability insurance. ' +
+              'Please call us at 540-213-0202 if you have any questions.'
             );
             window.location.href = '/quote/';
             return;
@@ -625,7 +650,11 @@ class RentalQuoteForm {
       (returnDate - pickupDate) / (1000 * 60 * 60 * 24)
     );
 
-    const needsInsurance = this.formData.answers.insurance === 'no';
+    // Need insurance if no full coverage but has liability
+    const needsInsurance = 
+      this.formData.answers.insurance === 'no' && 
+      this.formData.answers.liability_insurance === 'yes';
+
     const quote100 = calculateQuote(
       this.formData.vehicleType,
       '100',
@@ -655,8 +684,18 @@ class RentalQuoteForm {
   }
 
   createRateOptionsHTML(quote100, quote200, numDays) {
+    const pickupDate = new Date(this.formData.pickupDate + 'T00:00:00-05:00');
+    const returnDate = new Date(this.formData.returnDate + 'T00:00:00-05:00');
+    const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+    const needsInsurance = this.formData.answers.insurance === 'no' && 
+                          this.formData.answers.liability_insurance === 'yes';
+
     return `
             <h3>Select Your Mileage Package</h3>
+            <div class="rental-dates">
+                <p>Pickup Date: ${pickupDate.toLocaleDateString('en-US', dateOptions)}</p>
+                <p>Return Date: ${returnDate.toLocaleDateString('en-US', dateOptions)}</p>
+            </div>
             <div class="rate-options-container">
             ${
               quote100
@@ -665,50 +704,58 @@ class RentalQuoteForm {
                 <h4>100 Mile Package</h4>
                 <div class="rate-details">
                     <table class="rate-table">
-                        <tr>
-                            <td>Daily Rate:</td>
-                            <td>$${quote100.base_rate}/day</td>
-                        </tr>
-                        <tr>
-                            <td>Number of Days:</td>
-                            <td>${numDays}</td>
-                        </tr>
-                        <tr>
-                            <td>Rental Total:</td>
-                            <td>$${(quote100.base_rate * numDays).toFixed(2)}</td>
-                        </tr>
-                        <tr>
-                            <td>Facility Fee:</td>
-                            <td>$${quote100.facility_fee.toFixed(2)}</td>
-                        </tr>
-                        ${
-                          this.formData.answers.insurance === 'no'
-                            ? `
-                        <tr>
-                            <td>Insurance:</td>
-                            <td>$${quote100.insurance}/day</td>
-                        </tr>`
-                            : ''
-                        }
-                        <tr>
-                            <td>Tax:</td>
-                            <td>$${quote100.tax.toFixed(2)}</td>
-                        </tr>
-                        <tr class="total-row">
-                            <td>Total:</td>
-                            <td>$${quote100.total.toFixed(2)}</td>
-                        </tr>
-                        <tr class="deposit-row">
-                            <td>Required Deposit:</td>
-                            <td>$${
-                              this.formData.answers.out_of_state === 'yes'
-                                ? quote100.deposit.out_of_state
-                                : quote100.deposit.in_state
-                            }</td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td>Package Selected:</td>
+                                <td>100 Mile Package</td>
+                            </tr>
+                            <tr>
+                                <td>Free Miles:</td>
+                                <td>${100 * numDays}</td>
+                            </tr>
+                            <tr>
+                                <td>Rental Rate:</td>
+                                <td>$${(quote100.base_rate * numDays).toFixed(2)}</td>
+                            </tr>
+                            ${
+                              needsInsurance
+                                ? `
+                            <tr>
+                                <td>Insurance Total:</td>
+                                <td>$${(quote100.insurance * numDays).toFixed(2)}</td>
+                            </tr>`
+                                : ''
+                            }
+                            <tr>
+                                <td>Facility Charge:</td>
+                                <td>$${quote100.facility_fee.toFixed(2)}</td>
+                            </tr>
+                            <tr>
+                                <td>Tax:</td>
+                                <td>$${quote100.tax.toFixed(2)}</td>
+                            </tr>
+                            <tr>
+                                <td>Car Rental Total:</td>
+                                <td>$${quote100.total.toFixed(2)}</td>
+                            </tr>
+                            <tr>
+                                <td>Deposit Required:</td>
+                                <td>$${
+                                  this.formData.answers.out_of_state === 'yes'
+                                    ? quote100.deposit.out_of_state
+                                    : quote100.deposit.in_state
+                                }</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td>Total Required at Time of Rental:</td>
+                                <td>$${(quote100.total + (this.formData.answers.out_of_state === 'yes'
+                                    ? quote100.deposit.out_of_state
+                                    : quote100.deposit.in_state)).toFixed(2)}</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
-                <p class="mileage-info">Additional miles beyond the included 100 miles will be charged at $0.20 per mile.</p>
+                <p class="mileage-info">Additional miles beyond the included ${100 * numDays} miles will be charged at $0.20 per mile.</p>
                 <button class="select-rate" data-mileage="100">Select 100 Mile Package</button>
             </div>`
                 : ''
@@ -718,49 +765,55 @@ class RentalQuoteForm {
                 <div class="rate-details">
                     <table class="rate-table">
                         <tr>
-                            <td>Daily Rate:</td>
-                            <td>$${quote200.base_rate}/day</td>
+                            <td>Package Selected:</td>
+                            <td>200 Mile Package</td>
                         </tr>
                         <tr>
-                            <td>Number of Days:</td>
-                            <td>${numDays}</td>
+                            <td>Free Miles:</td>
+                            <td>${200 * numDays}</td>
                         </tr>
                         <tr>
-                            <td>Rental Total:</td>
+                            <td>Rental Rate:</td>
                             <td>$${(quote200.base_rate * numDays).toFixed(2)}</td>
                         </tr>
-                        <tr>
-                            <td>Facility Fee:</td>
-                            <td>$${quote200.facility_fee.toFixed(2)}</td>
-                        </tr>
                         ${
-                          this.formData.answers.insurance === 'no'
+                          needsInsurance
                             ? `
                         <tr>
-                            <td>Insurance:</td>
-                            <td>$${quote200.insurance}/day</td>
+                            <td>Insurance Total:</td>
+                            <td>$${(quote200.insurance * numDays).toFixed(2)}</td>
                         </tr>`
                             : ''
                         }
                         <tr>
+                            <td>Facility Charge:</td>
+                            <td>$${quote200.facility_fee.toFixed(2)}</td>
+                        </tr>
+                        <tr>
                             <td>Tax:</td>
                             <td>$${quote200.tax.toFixed(2)}</td>
                         </tr>
-                        <tr class="total-row">
-                            <td>Total:</td>
+                        <tr>
+                            <td>Car Rental Total:</td>
                             <td>$${quote200.total.toFixed(2)}</td>
                         </tr>
-                        <tr class="deposit-row">
-                            <td>Required Deposit:</td>
+                        <tr>
+                            <td>Deposit Required:</td>
                             <td>$${
                               this.formData.answers.out_of_state === 'yes'
                                 ? quote200.deposit.out_of_state
                                 : quote200.deposit.in_state
                             }</td>
                         </tr>
+                        <tr class="total-row">
+                            <td>Total Required at Time of Rental:</td>
+                            <td>$${(quote200.total + (this.formData.answers.out_of_state === 'yes'
+                                ? quote200.deposit.out_of_state
+                                : quote200.deposit.in_state)).toFixed(2)}</td>
+                        </tr>
                     </table>
                 </div>
-                <p class="mileage-info">Additional miles beyond the included 200 miles will be charged at $0.20 per mile.</p>
+                <p class="mileage-info">Additional miles beyond the included ${200 * numDays} miles will be charged at $0.20 per mile.</p>
                 <button class="select-rate" data-mileage="200">Select 200 Mile Package</button>
             </div>
             </div>
@@ -795,7 +848,10 @@ class RentalQuoteForm {
   }
 
   sendEmail() {
-    const needsInsurance = this.formData.answers.insurance === 'no';
+    const needsInsurance = 
+      this.formData.answers.insurance === 'no' && 
+      this.formData.answers.liability_insurance === 'yes';
+
     const quote = calculateQuote(
       this.formData.vehicleType,
       this.formData.selectedMileage,
@@ -806,20 +862,19 @@ class RentalQuoteForm {
       this.formData.answers.out_of_state === 'yes'
         ? quote.deposit.out_of_state
         : quote.deposit.in_state;
-    const pickupDate = new Date(this.formData.pickupDate);
-    const returnDate = new Date(this.formData.returnDate);
+
+    const pickupDate = new Date(this.formData.pickupDate + 'T00:00:00-05:00'); // Eastern timezone
+    const returnDate = new Date(this.formData.returnDate + 'T00:00:00-05:00');
     const numDays = Math.ceil(
       (returnDate - pickupDate) / (1000 * 60 * 60 * 24)
     );
     const totalInsurance = needsInsurance ? quote.insurance * numDays : 0;
-    const baseTotal = quote.base_rate * numDays;
-    const totalBeforeTax = baseTotal + totalInsurance + quote.facility_fee;
-    const tax =
-      totalBeforeTax * RENTAL_RATES[this.formData.vehicleType].tax_rate; // Recalculate tax
-    const totalDailyRate = totalBeforeTax + tax;
-    const totalRequired = deposit + totalDailyRate;
+    const totalRentalRate = quote.base_rate * numDays;
+    const totalBeforeTax = totalRentalRate + totalInsurance + quote.facility_fee;
+    const tax = totalBeforeTax * RENTAL_RATES[this.formData.vehicleType].tax_rate;
+    const totalRental = totalBeforeTax + tax;
+    const totalRequired = deposit + totalRental;
 
-    // Format dates
     const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
 
     const emailData = {
@@ -837,18 +892,19 @@ class RentalQuoteForm {
       return_date: returnDate.toLocaleDateString('en-US', dateOptions),
       age_license: this.formData.answers.age_license === 'yes' ? 'Yes' : 'No',
       insurance: this.formData.answers.insurance === 'yes' ? 'Yes' : 'No',
-      out_of_state:
-        this.formData.answers.out_of_state === 'yes' ? 'Yes' : 'No',
+      liability_insurance: this.formData.answers.liability_insurance === 'yes' ? 'Yes' : 'No',
+      out_of_state: this.formData.answers.out_of_state === 'yes' ? 'Yes' : 'No',
       mileage_package: this.formData.selectedMileage,
-      daily_rate: quote.base_rate.toFixed(2),
-      total_daily_rate: totalDailyRate.toFixed(2),
-      insurance_daily_rate: needsInsurance ? quote.insurance.toFixed(2) : '0.00',
+      number_of_days: numDays,
+      total_free_miles: this.formData.selectedMileage * numDays,
+      total_rental_rate: totalRentalRate.toFixed(2),
+      show_insurance: needsInsurance,
       total_insurance: totalInsurance.toFixed(2),
       facility_fee: quote.facility_fee.toFixed(2),
       tax: tax.toFixed(2),
+      total_rental: totalRental.toFixed(2),
       deposit: deposit.toFixed(2),
-      total_required: totalRequired.toFixed(2),
-      number_of_days: numDays,
+      total_required: totalRequired.toFixed(2)
     };
 
     Promise.all([
@@ -864,9 +920,11 @@ class RentalQuoteForm {
 
   showThankYouMessage() {
     this.quoteResult.innerHTML = `
+        <div class="thank-you-message">
             <h3>Thank You For Submitting a Rental Quote. We Will be in Touch With You Shortly.</h3>
             <p class="contact-info">If you have any further questions, please contact us by phone call or text message at 540-213-0202 or by email at rental@cawcaw.com.</p>
-        `;
+        </div>
+    `;
     this.scrollToTop();
   }
 

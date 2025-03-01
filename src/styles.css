@@ -2517,11 +2517,98 @@ a {
     .next-button:active,
     .back-button:active,
     .continue-button:active {
-        transform: scale(0.98);
+        transform: translateY(2px);
     }
 }
 
-/* Update the existing mobile media query */
-@media screen and (max-width: 480px) {
-    /* ...existing mobile styles... */
+.rate-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
 }
+
+.rate-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.rate-table td:first-child {
+    width: 60%;
+    color: #666;
+}
+
+.rate-table td:last-child {
+    width: 40%;
+    text-align: right;
+    font-weight: 500;
+}
+
+.rate-table .total-row {
+    background-color: #f8f9fa;
+    border-top: 2px solid #dee2e6;
+}
+
+.rate-table .total-row td {
+    font-weight: 700;
+    color: #000;
+    font-size: 1.1em;
+}
+
+/* Mobile responsiveness */
+
+.thank-you-message {
+    text-align: center;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: var(--spacing-md);
+}
+
+.thank-you-message .contact-info {
+    text-align: center;
+    margin: var(--spacing-md) auto;
+    max-width: 800px;
+    display: inline-block;
+}
+    .rate-table {
+        font-size: 0.9rem;
+    }
+
+    .rate-table td {
+        padding: 0.5rem;
+    }
+
+    .rate-table td:first-child {
+        width: 55%;
+    }
+
+    .rate-table td:last-child {
+        width: 45%;
+    }
+
+    .rate-option {
+        margin-bottom: 1.5rem;
+    }
+
+    .rate-table .total-row td {
+    }
+
+@media screen and (max-width: 480px) {
+    .rate-table td {
+        padding: 0.4rem;
+    }
+
+    .rate-table td:first-child {
+        width: 50%;
+    }
+
+    .rate-table td:last-child {
+        width: 50%;
+    }
+}
+    .continue-button:active {
+        transform: scale(0.98);
+    }
+
+
+
+
