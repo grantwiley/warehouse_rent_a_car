@@ -21,17 +21,25 @@
             }
         }
         
-        /* Mobile positioning - move to bottom right but avoid center where call button is */
+        /* Mobile positioning - position on right side without overlapping */
         @media (max-width: 768px) {
-            #chekkit-wrapper {
-                bottom: 80px !important; /* Move up above the call button */
-                right: 20px !important;
-                transform: scale(0.9) !important; /* Slightly smaller on mobile */
+            /* Adjust the fixed call button to move left */
+            .call-button {
+                left: 40% !important; /* Move left from center */
+                transform: translateX(-60%) !important; /* Adjust transform to match */
+                max-width: 250px !important; /* Make slightly narrower */
             }
             
-            /* When chat is open, move it higher to ensure good visibility */
+            /* Position chat icon on the right side */
+            #chekkit-wrapper {
+                bottom: 16px !important; /* Same level as call button */
+                right: 16px !important;
+                transform: scale(0.85) !important; /* Make a bit smaller on mobile */
+            }
+            
+            /* When chat is open, move it higher */
             #chekkit-wrapper.chekkit-open {
-                bottom: 120px !important;
+                bottom: 100px !important;
             }
         }
     </style>
