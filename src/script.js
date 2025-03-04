@@ -187,13 +187,7 @@ function validatePhoneNumber(phone) {
   return phoneRegex.test(phone);
 }
 
-// Initialize EmailJS
-try {
-  emailjs.init('Ij6nI-ZNRp56im9-x');
-  console.log('EmailJS initialized successfully');
-} catch (error) {
-  console.error('EmailJS initialization failed:', error);
-}
+// EmailJS initialization is now handled server-side
 
 class RentalQuoteForm {
   constructor() {
@@ -907,9 +901,31 @@ class RentalQuoteForm {
       total_required: totalRequired.toFixed(2)
     };
 
+    // Use our secure server-side endpoint instead of direct EmailJS calls
+    const sendToServer = (templateId) => {
+      return fetch('/send-email.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          template_id: templateId,
+          email_data: emailData
+        })
+      }).then(response => {
+        if (!response.ok) {
+          return response.json().then(data => {
+            throw new Error(`Email sending failed: ${JSON.stringify(data)}`);
+          });
+        }
+        return response.json();
+      });
+    };
+
+    // Send both emails through our server endpoint
     Promise.all([
-      emailjs.send('service_uwzvxd8', 'customer_quote', emailData),
-      emailjs.send('service_uwzvxd8', 'internal_quote', emailData),
+      sendToServer('customer_quote'),
+      sendToServer('internal_quote')
     ])
       .then(() => this.showThankYouMessage())
       .catch((error) => {
