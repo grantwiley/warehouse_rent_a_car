@@ -908,8 +908,8 @@ class RentalQuoteForm {
     };
 
     Promise.all([
-      emailjs.send('service_b8f7bys', 'customer_quote', emailData),
-      emailjs.send('service_b8f7bys', 'internal_quote', emailData),
+      emailjs.send('caw_rental', 'customer_quote', emailData),
+      emailjs.send('caw_rental', 'internal_quote', emailData),
     ])
       .then(() => this.showThankYouMessage())
       .catch((error) => {
