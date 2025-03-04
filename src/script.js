@@ -901,31 +901,12 @@ class RentalQuoteForm {
       total_required: totalRequired.toFixed(2)
     };
 
-    // Use our secure server-side endpoint instead of direct EmailJS calls
-    const sendToServer = (templateId) => {
-      return fetch('/send-email.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          template_id: templateId,
-          email_data: emailData
-        })
-      }).then(response => {
-        if (!response.ok) {
-          return response.json().then(data => {
-            throw new Error(`Email sending failed: ${JSON.stringify(data)}`);
-          });
-        }
-        return response.json();
-      });
-    };
-
-    // Send both emails through our server endpoint
+    // Get service ID from the form element, which will be populated at build time
+    const serviceId = document.getElementById('quote-form').dataset.serviceId;
+    
     Promise.all([
-      sendToServer('customer_quote'),
-      sendToServer('internal_quote')
+      emailjs.send(serviceId, 'customer_quote', emailData),
+      emailjs.send(serviceId, 'internal_quote', emailData)
     ])
       .then(() => this.showThankYouMessage())
       .catch((error) => {
