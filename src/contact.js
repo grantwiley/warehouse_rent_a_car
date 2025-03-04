@@ -40,8 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             Promise.all([
-                emailjs.send('service_b8f7bys', 'customer_contact', emailData),
-                emailjs.send('service_b8f7bys', 'internal_contact', emailData)
+                emailjs.send('caw_rental', 'customer_contact', emailData),
+                emailjs.send('caw_rental', 'internal_contact', emailData)
             ])
             .then(() => {
                 const formContainer = contactForm.parentElement;
