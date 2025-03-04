@@ -6,6 +6,35 @@
     <title>{{ title }} - Warehouse Rent A Car</title>
     <link rel="stylesheet" href="/styles.css">
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <style>
+        /* Custom styling for Chekkit chat widget */
+        /* Ensure the Chekkit widget has a high z-index but lower than call button */
+        #chekkit-wrapper {
+            z-index: 1500 !important; /* Call button is 1600 */
+        }
+        
+        /* Desktop positioning - bottom right */
+        @media (min-width: 769px) {
+            #chekkit-wrapper {
+                bottom: 20px !important;
+                right: 20px !important;
+            }
+        }
+        
+        /* Mobile positioning - move to bottom right but avoid center where call button is */
+        @media (max-width: 768px) {
+            #chekkit-wrapper {
+                bottom: 80px !important; /* Move up above the call button */
+                right: 20px !important;
+                transform: scale(0.9) !important; /* Slightly smaller on mobile */
+            }
+            
+            /* When chat is open, move it higher to ensure good visibility */
+            #chekkit-wrapper.chekkit-open {
+                bottom: 120px !important;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="header">
@@ -52,30 +81,50 @@
         <p class="copyright">Copyright © 2025 Warehouse Rent A Car. <br>All Rights Reserved.</p>
     </div>
 
-      <!-- Temporarily commented out chekkit webchat
-      <script>
+    <!-- Chekkit Chat Widget -->
+    <script>
+    var APP_ID = 'b6619c93e9f3aaa67ed61b965a9b63c0nG6nseBhzIxP6N+wva89GIPgrOuMKMyvdYCjH+VFhkU=';
+
+    window.chekkitSettings = {
+        app_id: APP_ID
+    };
+    </script>
+    <script async defer>
     (function() {
-      var APP_ID = "b6619c93e9f3aaa67ed61b965a9b63c0nG6nseBhzIxP6N+wva89GIPgrOuMKMyvdYCjH+VFhkU="; // Replace with your actual APP-ID
+        var d = document,
+        h = d.getElementsByTagName('head')[0],
+        s = d.createElement('script');
 
-      var checkitScript = document.createElement('script');
-      checkitScript.async = true;
-      checkitScript.src = 'https://webchat.chekkit.io/v1/webchat.js'; // Replace with the actual CheckIt script URL
-
-      checkitScript.onload = function() {
-        // Initialize CheckIt after the script has loaded
-        if (typeof CheckIt !== 'undefined') {
-          CheckIt.init({
-            appId: APP_ID,
-          });
-        } else {
-          console.error("CheckIt object not found.  Ensure the script loaded correctly.");
-        }
-      };
-
-      document.head.appendChild(checkitScript);
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'https://webchat.chekkit.io/v1/webchat.js';
+        h.appendChild(s);
+        
+        // Add a helper script to detect when chat is opened
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                if (document.querySelector('#chekkit-wrapper')) {
+                    var observer = new MutationObserver(function(mutations) {
+                        mutations.forEach(function(mutation) {
+                            if (mutation.attributeName === 'class') {
+                                var element = mutation.target;
+                                if (element.classList.contains('chekkit-open')) {
+                                    element.classList.add('chekkit-open');
+                                } else {
+                                    element.classList.remove('chekkit-open');
+                                }
+                            }
+                        });
+                    });
+                    
+                    observer.observe(document.querySelector('#chekkit-wrapper'), { 
+                        attributes: true 
+                    });
+                }
+            }, 2000); // Wait for Chekkit to initialize
+        });
     })();
-  </script>
-  -->
+    </script>
 
     <script src="/script.js"></script>
     <script src="/carousel.js"></script>
