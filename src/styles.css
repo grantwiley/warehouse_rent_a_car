@@ -140,7 +140,7 @@ nav ul {
     margin: 0;
     padding: 0;
     list-style: none;
-    gap: clamp(1rem, 3vw, 2.5rem);
+    gap: clamp(8rem, 3vw, 2.5rem);
 }
 
 nav ul li {
