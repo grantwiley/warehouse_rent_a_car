@@ -136,10 +136,11 @@ nav {
 
 nav ul {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     margin: 0;
     padding: 0;
     list-style: none;
+    gap: clamp(1rem, 3vw, 2.5rem);
 }
 
 nav ul li {
@@ -149,29 +150,17 @@ nav ul li {
 
 @media screen and (min-width: 769px) {
     nav ul {
-        margin-left: -4rem;
-        margin-right: -4rem;
         position: relative;
     }
     nav ul li {
-        padding: 0 1rem;
         position: relative;
-    }
-    nav ul li:not(:last-child)::after {
-        content: '';
-        position: absolute;
-        right: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 1px;
-        height: 1rem;
-        background-color: rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
     }
 }
 
 @media screen and (max-width: 768px) {
     nav ul {
-        gap: 2rem;
+        gap: 1.5rem;
     }
 }
 
@@ -180,8 +169,10 @@ nav a {
     text-decoration: none;
     font-weight: 600;
     font-size: 1rem;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, transform 0.3s ease;
     position: relative;
+    padding: 0.5rem 0;
+    display: inline-block;
 }
 
 nav a::after {
@@ -189,20 +180,28 @@ nav a::after {
     position: absolute;
     width: 0;
     height: 2px;
-    bottom: -4px;
+    bottom: 0;
     left: 0;
-    background-color: #00007A;
+    background-color: var(--primary-color);
     transition: width 0.3s ease, opacity 0.3s ease;
     opacity: 0;
 }
 
 nav a:hover {
-    color: #00007A;
+    color: var(--primary-color);
+    transform: translateY(-2px);
 }
 
 nav a:hover::after {
     width: 100%;
     opacity: 1;
+}
+
+/* Add hover effect for nav items */
+@media (hover: hover) {
+    nav ul li:hover {
+        transform: translateY(-2px);
+    }
 }
 
 .call-button {
@@ -2274,6 +2273,10 @@ nav.active ul li:nth-child(5) { animation-delay: 0.5s; }
     background-color: #000055;
 }
 
+.continue-button:active {
+    transform: translateY(1px);
+}
+
 a {
     text-decoration: none;
 }
@@ -2369,289 +2372,6 @@ a {
     }
 }
 
-.continue-button {
-    background-color: #00007A;
-    color: white;
-    padding: 0.75rem 2rem;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 100%;
-    margin-top: 1rem;
+.continue-button:active {
+    transform: translateY(1px);
 }
-
-.continue-button:hover {
-    background-color: #000055;
-}
-
-a {
-    text-decoration: none;
-}
-
-.left-hero a {
-    text-transform: uppercase;
-    font-size: 14px;
-}
-
-.fleet-info a {
-    text-transform: uppercase;
-    font-size: 14px;
-}
-.rental-form textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-    font-size: 16px;
-}
-
-.hours-section {
-    text-align: center;
-    padding: 2rem 1rem;
-}
-
-.hours-section h2 {
-    color: #00007A;
-    margin-bottom: 1.5rem;
-    position: relative;
-}
-
-.hours-section h2::after {
-    content: '';
-    display: block;
-    width: 60px;
-    height: 3px;
-    background-color: #FE641A;
-    margin: 0.5rem auto;
-}
-
-.hours-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    max-width: 300px;
-    margin: 0 auto;
-}
-
-.hours-list p {
-    margin: 0;
-    color: #666;
-}
-
-@media screen and (max-width: 480px) {
-    .hours-section {
-        padding: 1.5rem 1rem;
-    }
-
-    .hours-section h2 {
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .hours-list {
-        gap: 0.5rem;
-    }
-
-.hours-list p {
-    font-size: 0.95rem;
-}
-
-}
-
-@media screen and (min-width: 769px) and (max-width: 1024px) {
-    .hero {
-        padding: 2rem 4rem;
-        gap: 2rem;
-    }
-
-    .fleet-container {
-        grid-template-columns: repeat(3, 1fr);
-        padding: 2rem;
-    }
-
-    .left-hero h1 {
-        font-size: 2.2rem;
-    }
-
-    nav ul {
-        margin-left: -2rem;
-        margin-right: -2rem;
-    }
-
-    nav ul li {
-        padding: 0 2rem;
-    }
-
-    .rental-form {
-        padding: 2rem;
-        gap: 1.5rem;
-    }
-
-    .vehicle-options {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
-    }
-
-    .vehicle-option img {
-        width: 160px;
-        height: 100px;
-    }
-}
-
-@media screen and (min-width: 481px) and (max-width: 768px) {
-    .hero {
-        padding: 5rem 2rem 2rem;
-    }
-
-    .fleet-container {
-        grid-template-columns: repeat(2, 1fr);
-        padding: 1.5rem;
-    }
-
-    .header {
-        padding: 0.75rem 1.5rem;
-    }
-
-    .logo img {
-        width: 180px;
-    }
-
-    .rental-form {
-        grid-template-columns: 1fr;
-        padding: 1.5rem;
-    }
-
-    .vehicle-options {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-        padding: 0 1.5rem;
-    }
-
-    .vehicle-option img {
-        width: 140px;
-        height: 90px;
-    }
-
-    .reviews-container {
-        height: 300px;
-    }
-}
-
-/* Smoother touch behavior for mobile devices */
-@media (hover: hover) {
-    .book-now-button:hover,
-    .call-button:hover,
-    .quote-button:hover,
-    .next-button:hover,
-    .back-button:hover,
-    .continue-button:hover {
-        transform: translateY(-2px);
-    }
-
-@media (hover: none) {
-    .book-now-button:active,
-    .call-button:active,
-    .quote-button:active,
-    .next-button:active,
-    .back-button:active,
-    .continue-button:active {
-        transform: translateY(2px);
-    }
-}
-
-.rate-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 1rem;
-}
-
-.rate-table td {
-    padding: 0.75rem;
-}
-
-.rate-table td:first-child {
-    width: 60%;
-    color: #666;
-}
-
-.rate-table td:last-child {
-    width: 40%;
-    text-align: right;
-    font-weight: 500;
-}
-
-.rate-table .total-row {
-    background-color: #f8f9fa;
-    border-top: 2px solid #dee2e6;
-}
-
-.rate-table .total-row td {
-    font-weight: 700;
-    color: #000;
-    font-size: 1.1em;
-}
-
-/* Mobile responsiveness */
-
-.thank-you-message {
-    text-align: center;
-    max-width: var(--container-width);
-    margin: 0 auto;
-}
-
-.thank-you-message .contact-info {
-    text-align: center;
-    margin: var(--spacing-md) auto;
-    max-width: 800px;
-    display: inline-block;
-}
-    .rate-table {
-        font-size: 0.9rem;
-    }
-
-    .rate-table td {
-        padding: 0.5rem;
-    }
-
-    .rate-table td:first-child {
-        width: 55%;
-    }
-
-    .rate-table td:last-child {
-        width: 45%;
-    }
-
-    .rate-option {
-        margin-bottom: 1.5rem;
-    }
-
-    .rate-table .total-row td {
-    }
-
-@media screen and (max-width: 480px) {
-    .rate-table td {
-        padding: 0.4rem;
-    }
-
-    .rate-table td:first-child {
-        width: 50%;
-    }
-
-    .rate-table td:last-child {
-        width: 50%;
-    }
-}
-    .continue-button:active {
-        transform: scale(0.98);
-    }
-
-
-
-
-
-
-
