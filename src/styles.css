@@ -1996,6 +1996,10 @@ nav.active ul li:nth-child(5) { animation-delay: 0.5s; }
     display: inline-block;
 }
 
+.contact-details .quote-button {
+    color: white;
+}
+
 .quote-button {
     display: inline-block;
     background-color: var(--primary-color);
