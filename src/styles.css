@@ -494,7 +494,7 @@ nav.active ul li:nth-child(5) { animation-delay: 0.5s; }
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: white;
+    background-color: var(--light-bg);
     padding-bottom: 2rem;
 }
 
@@ -646,7 +646,7 @@ nav.active ul li:nth-child(5) { animation-delay: 0.5s; }
     align-items: center;
     justify-content: space-between;
     height: 100%;
-    background-color: #e6f0ff;
+    background-color: #fff;
     border-radius: 8px;
     padding: 1.5rem;  /* Increased padding for better spacing */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
@@ -678,11 +678,13 @@ nav.active ul li:nth-child(5) { animation-delay: 0.5s; }
         padding: 0 1.5rem;
     }
 }
+/* Combined and updated fleet-item p styles */
 .fleet-item p {
     text-align: center;
     margin: 0.5rem 0;
-    line-height: 1.3;
-    font-size: 0.85rem;
+    line-height: 1.5; /* Updated from 1.3 for better readability */
+    font-size: 0.9rem;  /* Increased from 0.85rem */
+    flex-grow: 1;     /* Retained from the later duplicate rule */
 }
 
 .fleet-item img {
@@ -692,24 +694,21 @@ nav.active ul li:nth-child(5) { animation-delay: 0.5s; }
     display: block;
     margin: 0 auto 1rem;  /* Added bottom margin */
     transition: transform 0.3s ease;
+    border: 1px solid var(--border-color);
 }
 
 .fleet-item:hover img {
     transform: translateY(-8px) scale(1.05);
 }
 
-.fleet-item p {
-    text-align: center;
-    margin: 0.5rem 0;
-    line-height: 1.5;
-    flex-grow: 1;  /* Allows description to take remaining space */
-}
+/* Removed duplicate .fleet-item p rule that was here */
 
 .car-type {
     font-style: italic;
     color: #666;
     margin-top: auto;
     padding-top: 1rem;  /* Added top padding */
+    font-size: 0.85rem; /* Explicitly set for hierarchy */
 }
 
 .fleet-info .book-now-button {
