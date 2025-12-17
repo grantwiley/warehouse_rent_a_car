@@ -237,22 +237,11 @@ class RentalQuoteForm {
 
   handleFormSubmit(e) {
     e.preventDefault();
-
-    const phoneInput = document.getElementById('phone').value;
-    if (!validatePhoneNumber(phoneInput)) {
-      alert('Please enter a valid phone number (e.g., 123-456-7890)');
-      return;
+    // Show the closure modal instead of processing the form
+    const modal = document.getElementById('closure-modal');
+    if (modal) {
+      modal.classList.remove('hidden');
     }
-
-    this.formData = {
-      firstName: document.getElementById('first-name').value,
-      lastName: document.getElementById('last-name').value,
-      email: document.getElementById('email').value,
-      phone: phoneInput,
-      answers: {},
-    };
-
-    this.showVehicleDate();
   }
 
   createVehicleDateHTML() {
