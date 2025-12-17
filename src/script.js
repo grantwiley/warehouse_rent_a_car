@@ -934,7 +934,47 @@ class RentalQuoteForm {
   }
 }
 
+// Modal functionality for service closure
+function initializeClosureModal() {
+  const modal = document.getElementById('closure-modal');
+  const closeBtn = document.querySelector('.modal-close-btn');
+  
+  if (!modal) return;
+  
+  // Check if we're on quote or contact page
+  const currentPath = window.location.pathname;
+  const isQuotePage = currentPath === '/quote/' || currentPath === '/quote';
+  const isContactPage = currentPath === '/contact/' || currentPath === '/contact';
+  
+  if (isQuotePage || isContactPage) {
+    // Show modal
+    modal.classList.remove('hidden');
+  }
+  
+  // Close modal on button click
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      modal.classList.add('hidden');
+    });
+  }
+  
+  // Close modal when clicking outside the modal content
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.add('hidden');
+    }
+  });
+  
+  // Close modal on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+      modal.classList.add('hidden');
+    }
+  });
+}
+
 // Initialize the form when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
+  initializeClosureModal();
   new RentalQuoteForm();
 });
