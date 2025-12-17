@@ -962,8 +962,24 @@ function initializeClosureModal() {
   });
 }
 
+function setupQuoteLinks() {
+  const modal = document.getElementById('closure-modal');
+  if (!modal) return;
+
+  // Select all links that point to the quote page
+  const quoteLinks = document.querySelectorAll('a[href="/quote"], a[href="/quote/"]');
+  
+  quoteLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      modal.classList.remove('hidden');
+    });
+  });
+}
+
 // Initialize the form when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   initializeClosureModal();
+  setupQuoteLinks();
   new RentalQuoteForm();
 });
